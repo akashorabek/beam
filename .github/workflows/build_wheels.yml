@@ -275,7 +275,7 @@ jobs:
       if: ${{matrix.os_python.arch == 'aarch64'}}
       name: Set up QEMU
       with:
-        image: "tonistiigi/binfmt:buildkit-v9.2.0"
+        image: "tonistiigi/binfmt:qemu-v9.2.0"
     - name: Install cibuildwheel
       # note: sync cibuildwheel version with gradle task sdks:python:bdistPy* steps
       run: pip install cibuildwheel==2.22.0 setuptools
