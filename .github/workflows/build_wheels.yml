@@ -274,6 +274,8 @@ jobs:
     - uses: docker/setup-qemu-action@v3
       if: ${{matrix.os_python.arch == 'aarch64'}}
       name: Set up QEMU
+      env:
+        image: "tonistiigi/binfmt:buildkit-v9.2.0"
     - name: Install cibuildwheel
       # note: sync cibuildwheel version with gradle task sdks:python:bdistPy* steps
       run: pip install cibuildwheel==2.22.0 setuptools
