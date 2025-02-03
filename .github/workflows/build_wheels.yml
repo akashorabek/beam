@@ -250,12 +250,12 @@ jobs:
         sudo apt-get update
         # List the available versions:
         apt-cache madison docker-ce | awk '{ print $3 }'
-        VERSION_STRING=5:27.3.1-1~ubuntu.20.04~focal
+        VERSION_STRING=5:27.5.1-1~ubuntu.20.04~focal
         sudo apt-get install -y docker-ce=$VERSION_STRING docker-ce-cli=$VERSION_STRING containerd.io docker-buildx-plugin docker-compose-plugin
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
       with:
-        version: "v0.19.1"
+        version: "v0.20.1"
     - name: Download python source distribution from artifacts
       uses: actions/download-artifact@v4.1.8
       with:
