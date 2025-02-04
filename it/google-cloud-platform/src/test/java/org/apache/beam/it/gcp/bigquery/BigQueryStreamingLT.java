@@ -219,6 +219,10 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
     abstract Builder toBuilder();
   }
 
+//  @Test
+//  public void testExactlyOnceStreaming() throws IOException, InterruptedException {
+//    runTest(BigQueryIO.Write.Method.STORAGE_WRITE_API);
+//  }
 
   @Test
   @Ignore
