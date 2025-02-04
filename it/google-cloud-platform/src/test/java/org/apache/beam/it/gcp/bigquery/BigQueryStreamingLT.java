@@ -219,10 +219,10 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
     abstract Builder toBuilder();
   }
 
-//  @Test
-//  public void testExactlyOnceStreaming() throws IOException, InterruptedException {
-//    runTest(BigQueryIO.Write.Method.STORAGE_WRITE_API);
-//  }
+  @Test
+  public void testExactlyOnceStreaming() throws IOException, InterruptedException {
+    runTest(BigQueryIO.Write.Method.STORAGE_WRITE_API);
+  }
 
   @Test
   @Ignore
@@ -383,7 +383,7 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
       assertNotEquals(PipelineOperator.Result.LAUNCH_FAILED, storageApiResult);
       // Check that the pipeline succeeded
       assertEquals(
-          PipelineLauncher.JobState.DONE,
+          PipelineLauncher.JobState.DRAINED,
           pipelineLauncher.getJobStatus(project, region, storageApiInfo.jobId()));
 
       // Export metrics
