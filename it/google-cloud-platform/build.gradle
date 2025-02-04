@@ -124,7 +124,14 @@ tasks.register(
         "BigQueryStorageApiStreamingPerformanceTest", IoPerformanceTestUtilities.IoPerformanceTest, project, 'google-cloud-platform', 'BigQueryStreamingLT',
         ['configuration':'large', 'project':'apache-beam-testing', 'artifactBucket':'io-performance-temp']
         + System.properties
-)
+){
+    testLogging {
+        // Show standard out and error for each test
+        showStandardStreams = true
+        // Optionally, display events for test outcomes
+        events "passed", "failed", "skipped"
+    }
+}
 tasks.register(
         "PubsubLoadTestMedium", IoPerformanceTestUtilities.IoPerformanceTest, project, 'google-cloud-platform', 'PubsubIOLT',
         ['configuration':'medium', 'project':'apache-beam-testing', 'artifactBucket':'io-performance-temp']

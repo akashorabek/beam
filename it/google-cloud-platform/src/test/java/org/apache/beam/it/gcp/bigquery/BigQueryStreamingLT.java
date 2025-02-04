@@ -108,6 +108,7 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
   public static void setUpTestClass() throws IOException, InterruptedException {
     PipelineOptionsFactory.register(TestPipelineOptions.class);
     BQ_CLIENT.createNewDataset(project, BIG_QUERY_DATASET_ID);
+    LOG.info("Created new dataset: {}", BIG_QUERY_DATASET_ID);
   }
 
   @Before
