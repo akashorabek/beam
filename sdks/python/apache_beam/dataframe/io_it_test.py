@@ -40,7 +40,7 @@ except ImportError:
 
 @unittest.skipIf(HttpError is None, 'GCP dependencies are not installed')
 class ReadUsingReadGbqTests(unittest.TestCase):
-  @pytest.mark.it_postcommit
+  @pytest.mark.it_postcommit_new
   def test_ReadGbq(self):
     from apache_beam.dataframe import convert
     with TestPipeline(is_integration_test=True) as p:
@@ -53,7 +53,7 @@ class ReadUsingReadGbqTests(unittest.TestCase):
           equal_to([(3, 'customer1', 'test'), (1, 'customer1', 'test'),
                     (2, 'customer2', 'test'), (4, 'customer2', 'test')]))
 
-  @pytest.mark.it_postcommit
+  @pytest.mark.it_postcommit_new
   def test_ReadGbq_export_with_project(self):
     from apache_beam.dataframe import convert
     with TestPipeline(is_integration_test=True) as p:
@@ -67,7 +67,7 @@ class ReadUsingReadGbqTests(unittest.TestCase):
           equal_to([(3, 'customer1', 'test'), (1, 'customer1', 'test'),
                     (2, 'customer2', 'test'), (4, 'customer2', 'test')]))
 
-  @pytest.mark.it_postcommit
+  @pytest.mark.it_postcommit_new
   def test_ReadGbq_direct_read(self):
     from apache_beam.dataframe import convert
     with TestPipeline(is_integration_test=True) as p:
