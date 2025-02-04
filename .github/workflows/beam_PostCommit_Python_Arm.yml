@@ -96,7 +96,6 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
           service_account: ${{ secrets.GCP_SA_EMAIL }}
           token_format: "access_token"
-          access_token_lifetime: "7200s"
           access_token_scopes: "https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/cloud-healthcare"
           export_environment_variables: true
       - name: Set up Docker Buildx
