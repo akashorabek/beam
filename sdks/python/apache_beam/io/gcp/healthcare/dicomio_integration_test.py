@@ -72,7 +72,7 @@ def random_string_generator(length):
 
 def create_dicom_store(project_id, dataset_id, region, dicom_store_id):
   # Create a an empty DICOM store
-  credential, _ = default()
+  credential, _ = default(scopes=['https://www.googleapis.com/auth/cloud-platform','https://www.googleapis.com/auth/cloud-healthcare'])
   session = requests.AuthorizedSession(credential)
   api_endpoint = "{}/projects/{}/locations/{}".format(
       HEALTHCARE_BASE_URL, project_id, region)
@@ -88,7 +88,7 @@ def create_dicom_store(project_id, dataset_id, region, dicom_store_id):
 
 def delete_dicom_store(project_id, dataset_id, region, dicom_store_id):
   # Delete an existing DICOM store
-  credential, _ = default()
+  credential, _ = default(scopes=['https://www.googleapis.com/auth/cloud-platform','https://www.googleapis.com/auth/cloud-healthcare'])
   session = requests.AuthorizedSession(credential)
   api_endpoint = "{}/projects/{}/locations/{}".format(
       HEALTHCARE_BASE_URL, project_id, region)
@@ -108,7 +108,7 @@ def get_gcs_file_http(file_name):
   api_endpoint = "{}/b/{}/o/{}?alt=media".format(
       GCS_BASE_URL, BUCKET_NAME, file_name)
 
-  credential, _ = default()
+  credential, _ = default(scopes=['https://www.googleapis.com/auth/cloud-platform','https://www.googleapis.com/auth/cloud-healthcare'])
   session = requests.AuthorizedSession(credential)
 
   response = session.get(api_endpoint)
