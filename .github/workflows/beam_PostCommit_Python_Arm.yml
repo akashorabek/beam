@@ -90,6 +90,7 @@ jobs:
           service_account_email: ${{ secrets.GCP_SA_EMAIL }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
+          scopes: "https://www.googleapis.com/auth/cloud-platform"
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: GCloud Docker credential helper
