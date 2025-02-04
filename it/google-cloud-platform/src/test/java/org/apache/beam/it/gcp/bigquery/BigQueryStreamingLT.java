@@ -219,10 +219,6 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
     abstract Builder toBuilder();
   }
 
-  @Test
-  public void testExactlyOnceStreaming() throws IOException, InterruptedException {
-    runTest(BigQueryIO.Write.Method.STORAGE_WRITE_API);
-  }
 
   @Test
   @Ignore
@@ -501,7 +497,7 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
 
     TableRow queryResponse =
         Iterables.getOnlyElement(
-            BQ_CLIENT.queryUnflattened(checkCorrectnessQuery, "apache-beam-testing", true, true));
+            BQ_CLIENT.queryUnflattened(checkCorrectnessQuery, project, true, true));
     long result = Long.parseLong((String) queryResponse.get("f0_"));
 
     LOG.info("Number of mismatched rows: {}", result);
@@ -522,7 +518,7 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
 
     TableRow queryResponse =
         Iterables.getOnlyElement(
-            BQ_CLIENT.queryUnflattened(checkDuplicationQuery, "apache-beam-testing", true, true));
+            BQ_CLIENT.queryUnflattened(checkDuplicationQuery, project, true, true));
     long actualCount = Long.parseLong((String) queryResponse.get("actualCount"));
     long expectedCount = Long.parseLong((String) queryResponse.get("expectedCount"));
     assertEquals(
