@@ -142,10 +142,10 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
             TestProperties.getProperty("crashIntervalSeconds", "-1", TestProperties.Type.PROPERTY));
   }
 
-//  @AfterClass
-//  public static void cleanup() {
-//    BQ_CLIENT.deleteDataset(project, BIG_QUERY_DATASET_ID);
-//  }
+  @AfterClass
+  public static void cleanup() {
+    BQ_CLIENT.deleteDataset(project, BIG_QUERY_DATASET_ID);
+  }
 
   private static final Map<String, TestConfiguration> TEST_CONFIGS =
       ImmutableMap.of(
