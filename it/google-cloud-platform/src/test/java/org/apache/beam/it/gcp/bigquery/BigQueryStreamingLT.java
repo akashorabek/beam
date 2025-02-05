@@ -490,12 +490,13 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
     destTable = toTableSpec(toTableReference(destTable));
     expectedTable = toTableSpec(toTableReference(expectedTable));
 
+    // check all unique rows from storage_api_table are in the expected_table
     String checkCorrectnessQuery =
         String.format(
             "WITH \n"
                 + "storage_api_table AS (SELECT %s FROM `%s`), \n"
                 + "expected_table AS (SELECT %s FROM `%s`), \n"
-                + "rows_mismatched AS (SELECT * FROM expected_table EXCEPT DISTINCT SELECT * FROM storage_api_table) \n"
+                + "rows_mismatched AS (SELECT * FROM storage_api_table EXCEPT DISTINCT SELECT * FROM expected_table) \n"
                 + "SELECT COUNT(*) FROM rows_mismatched",
             columnNames, destTable, columnNames, expectedTable);
 
