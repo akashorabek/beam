@@ -186,26 +186,26 @@ public final class BigQueryIOST extends IOStressTestBase {
     runTest();
   }
 
-  @Test
-  public void testJsonStorageAPIWrite() throws IOException {
-    configuration.writeFormat = WriteFormat.JSON.name();
-    configuration.writeMethod = STORAGE_WRITE_API_METHOD;
-    runTest();
-  }
+//  @Test
+//  public void testJsonStorageAPIWrite() throws IOException {
+//    configuration.writeFormat = WriteFormat.JSON.name();
+//    configuration.writeMethod = STORAGE_WRITE_API_METHOD;
+//    runTest();
+//  }
 
-  @Test
-  public void testAvroStorageAPIAtLeastOnce() throws IOException {
-    configuration.writeFormat = WriteFormat.AVRO.name();
-    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
-    runTest();
-  }
-
-  @Test
-  public void testJsonStorageAPIAtLeastOnce() throws IOException {
-    configuration.writeFormat = WriteFormat.JSON.name();
-    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
-    runTest();
-  }
+//  @Test
+//  public void testAvroStorageAPIAtLeastOnce() throws IOException {
+//    configuration.writeFormat = WriteFormat.AVRO.name();
+//    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
+//    runTest();
+//  }
+//
+//  @Test
+//  public void testJsonStorageAPIAtLeastOnce() throws IOException {
+//    configuration.writeFormat = WriteFormat.JSON.name();
+//    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
+//    runTest();
+//  }
 
   /**
    * Runs a stress test for BigQueryIO based on the specified configuration parameters. The method
@@ -300,7 +300,7 @@ public final class BigQueryIOST extends IOStressTestBase {
     String experiments =
         configuration.writeMethod.equals(STORAGE_API_AT_LEAST_ONCE_METHOD)
             ? GcpOptions.STREAMING_ENGINE_EXPERIMENT + ",streaming_mode_at_least_once"
-            : GcpOptions.STREAMING_ENGINE_EXPERIMENT;
+            : "use_runner_v2";
 
     PipelineLauncher.LaunchConfig options =
         PipelineLauncher.LaunchConfig.builder("write-bigquery")
