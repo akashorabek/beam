@@ -100,7 +100,7 @@ jobs:
       if: github.event_name != 'schedule'
       uses: ./.github/actions/gradle-command-self-hosted-action
       with:
-        gradle-command: :it:${{ matrix.test_case }}  -DmaxNumWorkers=10 --info
+        gradle-command: :it:${{ matrix.test_case }}  -DmaxNumWorkers=10 --debug
       env:
         exportDataset: performance_tests
         exportTable: io_performance_metrics_test
