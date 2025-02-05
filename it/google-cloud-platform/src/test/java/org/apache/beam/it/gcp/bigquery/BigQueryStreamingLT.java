@@ -363,7 +363,7 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
               .addParameter("runner", config.getRunner())
               .addParameter("streaming", "true")
 //              .addParameter("experiments", GcpOptions.STREAMING_ENGINE_EXPERIMENT)
-//              .addParameter("experiments", "use_runner_v2")
+              .addParameter("experiments", "use_runner_v2")
               .addParameter(
                   "maxNumWorkers",
                   TestProperties.getProperty("maxNumWorkers", "10", TestProperties.Type.PROPERTY))
@@ -378,7 +378,7 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
                   .setJobId(storageApiInfo.jobId())
                   .setProject(project)
                   .setRegion(region)
-                  .setTimeoutAfter(java.time.Duration.ofMinutes(config.getMinutes() * 2L))
+                  .setTimeoutAfter(java.time.Duration.ofMinutes(config.getMinutes() * 4L))
                   .setCheckAfter(java.time.Duration.ofSeconds(config.getMinutes() * 60 / 20))
                   .build());
       // Check the initial launch didn't fail
