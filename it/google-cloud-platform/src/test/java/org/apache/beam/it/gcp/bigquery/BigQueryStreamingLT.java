@@ -362,7 +362,8 @@ public class BigQueryStreamingLT extends IOLoadTestBase {
               .setPipeline(storageApiPipeline)
               .addParameter("runner", config.getRunner())
               .addParameter("streaming", "true")
-              .addParameter("experiments", GcpOptions.STREAMING_ENGINE_EXPERIMENT)
+//              .addParameter("experiments", GcpOptions.STREAMING_ENGINE_EXPERIMENT)
+              .addParameter("experiments", "use_runner_v2")
               .addParameter(
                   "maxNumWorkers",
                   TestProperties.getProperty("maxNumWorkers", "10", TestProperties.Type.PROPERTY))
