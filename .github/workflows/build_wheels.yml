@@ -227,13 +227,13 @@ jobs:
           # TODO(https://github.com/apache/beam/issues/31114)
           {"os": "macos-13", "runner": "macos-13", "python": "${{ needs.check_env_variables.outputs.py-versions-test }}", arch: "auto" },
           {"os": "windows-latest", "runner": "windows-latest", "python": "${{ needs.check_env_variables.outputs.py-versions-test }}", arch: "auto" },
-          {"os": "ubuntu-20.04", "runner": [self-hosted, ubuntu-20.04, main], "python": "${{ needs.check_env_variables.outputs.py-versions-test }}", arch: "aarch64" }
+          {"os": "ubuntu-20.04", "runner": [self-hosted, ubuntu-22.04, small-ubuntu-22], "python": "${{ needs.check_env_variables.outputs.py-versions-test }}", arch: "aarch64" }
         ]
         # Keep in sync (remove asterisks) with PY_VERSIONS_FULL env var above - if changed, change that as well.
         py_version: ["cp39-", "cp310-", "cp311-", "cp312-"]
     steps:
     # Add the Docker Engine update step as the first step
-    - name: Install Docker Engine version 27.3.1
+    - name: Install Docker Engine version 27.5.1
       run: |
         # Add Docker's official GPG key:
         sudo apt-get update
@@ -250,12 +250,12 @@ jobs:
         sudo apt-get update
         # List the available versions:
         apt-cache madison docker-ce | awk '{ print $3 }'
-        VERSION_STRING=5:27.5.0-1~ubuntu.20.04~focal
+        VERSION_STRING=5:27.5.1-1~ubuntu.22.04~jammy
         sudo apt-get install -y docker-ce=$VERSION_STRING docker-ce-cli=$VERSION_STRING containerd.io docker-buildx-plugin docker-compose-plugin
-#    - name: Set up Docker Buildx
-#      uses: docker/setup-buildx-action@v3
-#      with:
-#        version: "v0.20.1"
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        version: "v0.20.1"
     - name: Download python source distribution from artifacts
       uses: actions/download-artifact@v4.1.8
       with:
@@ -288,8 +288,8 @@ jobs:
         # TODO: https://github.com/apache/beam/issues/23048
         CIBW_SKIP: "*-musllinux_*"
         CIBW_BEFORE_BUILD: pip install cython==0.29.36 numpy --config-settings=setup-args="-Dallow-noblas=true" && pip install --upgrade setuptools
-        CIBW_MANYLINUX_AARCH64_IMAGE: "quay.io/pypa/manylinux2014_aarch64:2025.02.02-1"
-        CIBW_MANYLINUX_PYPY_AARCH64_IMAGE: "quay.io/pypa/manylinux2014_aarch64:2025.02.02-1"
+        CIBW_MANYLINUX_AARCH64_IMAGE: "quay.io/pypa/manylinux2014_aarch64:2025.02.08-2"
+        CIBW_MANYLINUX_PYPY_AARCH64_IMAGE: "quay.io/pypa/manylinux2014_aarch64:2025.02.08-2"
       run: cibuildwheel --print-build-identifiers && cibuildwheel --output-dir wheelhouse
       shell: bash
     - name: install sha512sum on MacOS
