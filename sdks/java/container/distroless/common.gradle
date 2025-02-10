@@ -52,7 +52,7 @@ def base = containerImageName(
 
 docker {
     name containerImageName(
-            name: "${base_name}_distroless",
+            name: "${base_name}_distroess",
             root: root,
             tag: tag)
     tags containerImageTags()
