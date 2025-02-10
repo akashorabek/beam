@@ -47,6 +47,11 @@ resource "google_container_node_pool" "main-actions-runner-pool" {
     ]
     service_account = data.google_service_account.service_account.email
     tags = ["actions-runner-pool"]
+    kubelet_config {
+        cpu_cfs_quota = "false"
+        pod_pids_limit = 0
+        cpu_manager_policy = ""
+     }
    }
 }
 
@@ -86,6 +91,15 @@ resource "google_container_node_pool" "additional_runner_pools" {
         value  = each.value.name
         effect = "NO_SCHEDULE"
         }
+      }
+    kubelet_config {
+        cpu_cfs_quota = "false"
+        pod_pids_limit = 0
+        cpu_manager_policy = ""
+      }
+
+    resource_labels = {
+          goog-gke-node-pool-provisioning-model = each.value.name == "small-runner-ubuntu-22" ? "on-demand" : null
       }
     }
   }
