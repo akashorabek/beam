@@ -52,7 +52,7 @@ def base = containerImageName(
 
 docker {
     name containerImageName(
-            name: "${base_name}_distroess",
+            name: "${base_name}_distroless",
             root: root,
             tag: tag)
     tags containerImageTags()
@@ -67,3 +67,5 @@ docker {
     load project.useBuildx() && !pushContainers
     push pushContainers
 }
+
+dockerPrepare.dependsOn ":sdks:java:container:java${imageJavaVersion}:docker"
