@@ -17,9 +17,9 @@
 # under the License.
 #
 
-FROM ghcr.io/actions-runner-controller/actions-runner-controller/actions-runner:ubuntu-20.04
+FROM ghcr.io/actions-runner-controller/actions-runner-controller/actions-runner:ubuntu-22.04
 #install BuildX
-COPY --from=docker/buildx-bin:0.11.1 /buildx /usr/libexec/docker/cli-plugins/docker-buildx
+COPY --from=docker/buildx-bin:latest /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 RUN docker buildx install && docker buildx version
 
 
