@@ -378,7 +378,7 @@ public class StorageApiSinkSchemaUpdateIT {
     // We give a healthy waiting period between each element to give Storage API streams a chance to
     // recognize the new schema. Apply on relevant tests.
     boolean waitLonger = changeTableSchema && (useAutoSchemaUpdate || !useInputSchema);
-    Duration interval = waitLonger ? Duration.standardSeconds(1) : Duration.millis(1);
+    Duration interval = waitLonger ? Duration.standardSeconds(10) : Duration.millis(1);
     Duration stop =
         waitLonger ? Duration.standardSeconds(TOTAL_N - 1) : Duration.millis(TOTAL_N - 1);
     Function<Instant, Long> getIdFromInstant =
@@ -638,7 +638,7 @@ public class StorageApiSinkSchemaUpdateIT {
     Instant start = new Instant(0);
     // We give a healthy waiting period between each element to give Storage API streams a chance to
     // recognize the new schema. Apply on relevant tests.
-    Duration interval = changeTableSchema ? Duration.standardSeconds(1) : Duration.millis(1);
+    Duration interval = changeTableSchema ? Duration.standardSeconds(10) : Duration.millis(1);
     Duration stop =
         changeTableSchema ? Duration.standardSeconds(numRows - 1) : Duration.millis(numRows - 1);
     Function<Instant, Long> getIdFromInstant =
