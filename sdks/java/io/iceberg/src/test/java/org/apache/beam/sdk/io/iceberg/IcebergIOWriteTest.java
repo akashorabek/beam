@@ -59,6 +59,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
@@ -74,6 +75,8 @@ public class IcebergIOWriteTest implements Serializable {
   public transient TestDataWarehouse warehouse = new TestDataWarehouse(TEMPORARY_FOLDER, "default");
 
   @Rule public transient TestPipeline testPipeline = TestPipeline.create();
+
+  @Rule public transient Timeout globalTimeout = Timeout.seconds(1500);
 
   @Test
   public void testSimpleAppend() throws Exception {

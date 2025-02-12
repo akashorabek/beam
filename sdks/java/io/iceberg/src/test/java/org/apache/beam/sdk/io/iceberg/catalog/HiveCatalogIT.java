@@ -32,6 +32,8 @@ import org.apache.iceberg.catalog.Catalog;
 import org.apache.iceberg.hive.HiveCatalog;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.Timeout;
 
 /**
  * Read and write tests using {@link HiveCatalog}.
@@ -63,6 +65,8 @@ public class HiveCatalogIT extends IcebergCatalogBaseIT {
       hiveMetastoreExtension.cleanup();
     }
   }
+
+  @Rule public transient Timeout globalTimeout = Timeout.seconds(1500);
 
   @Override
   public void catalogSetup() throws Exception {

@@ -27,13 +27,15 @@ import org.apache.iceberg.catalog.Catalog;
 import org.apache.iceberg.catalog.Namespace;
 import org.apache.iceberg.catalog.TableIdentifier;
 import org.apache.iceberg.hadoop.HadoopCatalog;
+import org.junit.Rule;
+import org.junit.rules.Timeout;
 
 public class HadoopCatalogIT extends IcebergCatalogBaseIT {
   @Override
   public Integer numRecords() {
     return 100;
   }
-
+  @Rule public transient Timeout globalTimeout = Timeout.seconds(1500);
   @Override
   public Catalog createCatalog() {
     Configuration catalogHadoopConf = new Configuration();
