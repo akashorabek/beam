@@ -229,6 +229,28 @@ public class StorageApiSinkSchemaUpdateIT {
               entry.getKey(),
               BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class));
         }
+
+         long startTime = System.currentTimeMillis();
+         long timeoutMillis = 60000; // wait up to 60 seconds
+         boolean schemaPropagated = false;
+         while (System.currentTimeMillis() - startTime < timeoutMillis) {
+           schemaPropagated = true;
+           for (Map.Entry<String, String> entry : newSchemas.entrySet()) {
+             TableSchema currentSchema = bqClient.getTableResource(projectId, datasetId, entry.getKey()).getSchema();
+             TableSchema expectedSchema = BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class);
+             if (currentSchema.getFields().size() != expectedSchema.getFields().size()) {
+               schemaPropagated = false;
+               break;
+             }
+           }
+           if (schemaPropagated) {
+             break;
+           }
+           Thread.sleep(5000);
+         }
+         if (!schemaPropagated) {
+           LOG.warn("Schema update did not propagate fully within the timeout.");
+         }
       }
 
       counter.write(++current);
@@ -378,9 +400,9 @@ public class StorageApiSinkSchemaUpdateIT {
     // We give a healthy waiting period between each element to give Storage API streams a chance to
     // recognize the new schema. Apply on relevant tests.
     boolean waitLonger = changeTableSchema && (useAutoSchemaUpdate || !useInputSchema);
-    Duration interval = waitLonger ? Duration.standardSeconds(10) : Duration.millis(1);
+    Duration interval = waitLonger ? Duration.standardSeconds(1) : Duration.millis(1);
     Duration stop =
-        waitLonger ? Duration.standardSeconds((TOTAL_N - 1) * 10) : Duration.millis(TOTAL_N - 1);
+        waitLonger ? Duration.standardSeconds(TOTAL_N - 1) : Duration.millis(TOTAL_N - 1);
     Function<Instant, Long> getIdFromInstant =
         waitLonger
             ? (Function<Instant, Long> & Serializable)
@@ -638,9 +660,9 @@ public class StorageApiSinkSchemaUpdateIT {
     Instant start = new Instant(0);
     // We give a healthy waiting period between each element to give Storage API streams a chance to
     // recognize the new schema. Apply on relevant tests.
-    Duration interval = changeTableSchema ? Duration.standardSeconds(10) : Duration.millis(1);
+    Duration interval = changeTableSchema ? Duration.standardSeconds(1) : Duration.millis(1);
     Duration stop =
-        changeTableSchema ? Duration.standardSeconds((numRows - 1) * 10) : Duration.millis(numRows - 1);
+        changeTableSchema ? Duration.standardSeconds(numRows - 1) : Duration.millis(numRows - 1);
     Function<Instant, Long> getIdFromInstant =
         changeTableSchema
             ? (Function<Instant, Long> & Serializable)
