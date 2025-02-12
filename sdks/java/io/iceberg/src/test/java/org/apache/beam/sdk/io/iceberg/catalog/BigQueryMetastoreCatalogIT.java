@@ -42,17 +42,13 @@ import org.apache.iceberg.catalog.Namespace;
 import org.apache.iceberg.catalog.TableIdentifier;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.Timeout;
 
 public class BigQueryMetastoreCatalogIT extends IcebergCatalogBaseIT {
   private static final BigqueryClient BQ_CLIENT = new BigqueryClient("BigQueryMetastoreCatalogIT");
   static final String BQMS_CATALOG = "org.apache.iceberg.gcp.bigquery.BigQueryMetastoreCatalog";
   static final String DATASET = "managed_iceberg_bqms_tests_" + System.nanoTime();;
   static final long SALT = System.nanoTime();
-
-  @Rule public transient Timeout globalTimeout = Timeout.seconds(1500);
 
   @BeforeClass
   public static void createDataset() throws IOException, InterruptedException {
