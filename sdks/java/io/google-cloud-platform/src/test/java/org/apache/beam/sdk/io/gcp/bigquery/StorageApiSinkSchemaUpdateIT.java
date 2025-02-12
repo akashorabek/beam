@@ -380,7 +380,7 @@ public class StorageApiSinkSchemaUpdateIT {
     boolean waitLonger = changeTableSchema && (useAutoSchemaUpdate || !useInputSchema);
     Duration interval = waitLonger ? Duration.standardSeconds(10) : Duration.millis(1);
     Duration stop =
-        waitLonger ? Duration.standardSeconds(TOTAL_N - 1) : Duration.millis(TOTAL_N - 1);
+        waitLonger ? Duration.standardSeconds((TOTAL_N - 1) * 10) : Duration.millis(TOTAL_N - 1);
     Function<Instant, Long> getIdFromInstant =
         waitLonger
             ? (Function<Instant, Long> & Serializable)
@@ -640,7 +640,7 @@ public class StorageApiSinkSchemaUpdateIT {
     // recognize the new schema. Apply on relevant tests.
     Duration interval = changeTableSchema ? Duration.standardSeconds(10) : Duration.millis(1);
     Duration stop =
-        changeTableSchema ? Duration.standardSeconds(numRows - 1) : Duration.millis(numRows - 1);
+        changeTableSchema ? Duration.standardSeconds((numRows - 1) * 10) : Duration.millis(numRows - 1);
     Function<Instant, Long> getIdFromInstant =
         changeTableSchema
             ? (Function<Instant, Long> & Serializable)
