@@ -229,6 +229,30 @@ public class StorageApiSinkSchemaUpdateIT {
               entry.getKey(),
               BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class));
         }
+
+        long startTime = System.currentTimeMillis();
+        long timeoutMillis = 60000; // wait up to 60 seconds
+        boolean schemaPropagated = false;
+        while (System.currentTimeMillis() - startTime < timeoutMillis) {
+          schemaPropagated = true;
+          for (Map.Entry<String, String> entry : newSchemas.entrySet()) {
+            TableSchema currentSchema = bqClient.getTableResource(projectId, datasetId, entry.getKey()).getSchema();
+            TableSchema expectedSchema = BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class);
+            if (currentSchema.getFields().size() != expectedSchema.getFields().size()) {
+              schemaPropagated = false;
+              break;
+            }
+          }
+          if (schemaPropagated) {
+            break;
+          }
+          Thread.sleep(5000);
+        }
+        if (!schemaPropagated) {
+          LOG.info("Schema update did not propagate fully within the timeout.");
+        } else {
+          LOG.info("Schema update propagate fully within the timeout - {}.", System.currentTimeMillis() - startTime);
+        }
       }
 
       counter.write(++current);
