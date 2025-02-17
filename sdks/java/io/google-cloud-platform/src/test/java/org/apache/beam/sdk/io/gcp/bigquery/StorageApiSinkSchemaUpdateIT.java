@@ -130,8 +130,8 @@ public class StorageApiSinkSchemaUpdateIT {
   // Number of rows with the original schema
   private static final int ORIGINAL_N = 60;
   // for dynamic destination test
-  private static final int NUM_DESTINATIONS = 1;
-  private static final int TOTAL_NUM_STREAMS = 3;
+  private static final int NUM_DESTINATIONS = 3;
+  private static final int TOTAL_NUM_STREAMS = 6;
 
   private final Random randomGenerator = new Random();
 
@@ -221,7 +221,7 @@ public class StorageApiSinkSchemaUpdateIT {
       // We update schema early on to leave a healthy amount of time for StreamWriter to recognize
       // it.
       // We also update halfway through so that some writers are created *after* the schema update
-      if (current == TOTAL_NUM_STREAMS / 2) {
+      if (current == 10) {
         for (Map.Entry<String, String> entry : newSchemas.entrySet()) {
           bqClient.updateTableSchema(
               projectId,
@@ -230,6 +230,7 @@ public class StorageApiSinkSchemaUpdateIT {
               BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class));
         }
 
+        // check that schema update propagated fully
         long startTime = System.currentTimeMillis();
         long timeoutMillis = 60000; // wait up to 60 seconds
         boolean schemaPropagated = false;
@@ -251,8 +252,8 @@ public class StorageApiSinkSchemaUpdateIT {
         if (!schemaPropagated) {
           LOG.info("Schema update did not propagate fully within the timeout.");
         } else {
-          LOG.info("Schema update propagate fully within the timeout - {}.", System.currentTimeMillis() - startTime);
-          Thread.sleep(5000);
+          LOG.info("Schema update propagated fully within the timeout - {}.", System.currentTimeMillis() - startTime);
+          Thread.sleep(15000);
         }
       }
 
