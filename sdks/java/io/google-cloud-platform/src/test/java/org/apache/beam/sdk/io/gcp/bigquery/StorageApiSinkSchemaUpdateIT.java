@@ -252,6 +252,7 @@ public class StorageApiSinkSchemaUpdateIT {
           LOG.info("Schema update did not propagate fully within the timeout.");
         } else {
           LOG.info("Schema update propagate fully within the timeout - {}.", System.currentTimeMillis() - startTime);
+          Thread.sleep(5000);
         }
       }
 
