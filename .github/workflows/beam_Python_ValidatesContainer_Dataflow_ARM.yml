@@ -100,6 +100,7 @@ jobs:
         with:
           gradle-command: :sdks:python:test-suites:dataflow:py${{steps.set_py_ver_clean.outputs.py_ver_clean}}:validatesContainerARM
           arguments: |
+            --info \
             -PpythonVersion=${{ matrix.python_version }} \
             -Pcontainer-architecture-list=arm64,amd64 \
             -Pdocker-repository-root=us.gcr.io/apache-beam-testing/github-actions \
