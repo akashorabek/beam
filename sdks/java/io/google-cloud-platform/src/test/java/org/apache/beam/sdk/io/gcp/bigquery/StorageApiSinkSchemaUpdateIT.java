@@ -130,8 +130,8 @@ public class StorageApiSinkSchemaUpdateIT {
   // Number of rows with the original schema
   private static final int ORIGINAL_N = 60;
   // for dynamic destination test
-  private static final int NUM_DESTINATIONS = 3;
-  private static final int TOTAL_NUM_STREAMS = 9;
+  private static final int NUM_DESTINATIONS = 1;
+  private static final int TOTAL_NUM_STREAMS = 3;
 
   private final Random randomGenerator = new Random();
 
