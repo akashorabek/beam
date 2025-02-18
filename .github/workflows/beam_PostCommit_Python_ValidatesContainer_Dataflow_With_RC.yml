@@ -79,9 +79,12 @@ jobs:
             11
             8
           python-version: ${{ matrix.python_version }}
+      - name: Authenticate with GCP
+        run: |
+          gcloud auth activate-service-account --key-file=${{ secrets.GCP_SA_KEY }}
       - name: GCloud Docker credential helper
         run: |
-          gcloud auth configure-docker
+          gcloud auth configure-docker --quiet
       - name: Set PY_VER_CLEAN
         id: set_py_ver_clean
         run: |
