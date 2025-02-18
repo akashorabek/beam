@@ -94,6 +94,7 @@ jobs:
         with:
           gradle-command: :sdks:python:test-suites:dataflow:py${{steps.set_py_ver_clean.outputs.py_ver_clean}}:validatesContainer
           arguments: |
+            -- info \
             -PpythonVersion=${{ matrix.python_version }} \
       - name: Run validatesDistrolessContainer script
         env:
@@ -102,6 +103,7 @@ jobs:
         with:
           gradle-command: :sdks:python:test-suites:dataflow:py${{steps.set_py_ver_clean.outputs.py_ver_clean}}:validatesDistrolessContainer
           arguments: |
+            -- info \
             -PpythonVersion=${{ matrix.python_version }}
       - name: Archive Python Test Results
         uses: actions/upload-artifact@v4
