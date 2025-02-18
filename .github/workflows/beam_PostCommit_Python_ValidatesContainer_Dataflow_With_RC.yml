@@ -79,6 +79,9 @@ jobs:
             11
             8
           python-version: ${{ matrix.python_version }}
+      - name: GCloud Docker credential helper
+        run: |
+          gcloud auth configure-docker
       - name: Set PY_VER_CLEAN
         id: set_py_ver_clean
         run: |
