@@ -122,13 +122,13 @@ cd sdks/python
 SDK_LOCATION=$2
 
 echo ">>> RUNNING DATAFLOW RUNNER VALIDATESCONTAINER TEST"
-pytest -s -o log_cli=True log_cli_level=DEBUG -o log_level=Debug -o junit_suite_name=$IMAGE_NAME \
+pytest -s -o log_cli=True -o log_level=Debug -o junit_suite_name=$IMAGE_NAME \
   -m=it_validatescontainer \
   --numprocesses=1 \
   --timeout=3600 \
   --junitxml=$XUNIT_FILE \
   --ignore-glob '.*py3\d?\.py$' \
-  --log-cli-level=INFO \
+  --log-cli-level=DEBUG \
   --test-pipeline-options=" \
     --runner=TestDataflowRunner \
     --project=$PROJECT \
