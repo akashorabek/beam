@@ -81,7 +81,7 @@ jobs:
           python-version: ${{ matrix.python_version }}
       - name: Authenticate with GCP
         run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > key.json
+          echo "${{ secrets.GCP_SA_KEY }}" > key.json
           gcloud auth activate-service-account --key-file=key.json
       - name: GCloud Docker credential helper
         run: |
