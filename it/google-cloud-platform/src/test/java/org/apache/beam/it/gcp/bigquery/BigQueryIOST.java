@@ -282,8 +282,11 @@ public final class BigQueryIOST extends IOStressTestBase {
           source
               .apply(
                   "One input to multiple outputs",
-                  ParDo.of(new MultiplierDoFn<>(startMultiplier, loadPeriods)))
-              .apply("Reshuffle fanout", Reshuffle.of());
+                  ParDo.of(new MultiplierDoFn<>(startMultiplier, loadPeriods)));
+
+      if (configuration.writeMethod.equals(STORAGE_API_AT_LEAST_ONCE_METHOD)) {
+        source = source.apply("Reshuffle fanout", Reshuffle.of());
+      }
     }
     source
         .apply("Extract values", Values.create())
