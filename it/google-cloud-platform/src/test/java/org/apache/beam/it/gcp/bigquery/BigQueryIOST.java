@@ -349,9 +349,9 @@ public final class BigQueryIOST extends IOStressTestBase {
     } else {
       assertTrue(
           String.format(
-              "Number of rows in the table (%d) is greater than the expected number (%d).",
+              "Number of rows in the table (%d) is smaller than the expected number (%d).",
               rowCount, (long) numRecords),
-          numRecords >= rowCount);
+          numRecords <= rowCount);
     }
 
     // export metrics
