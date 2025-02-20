@@ -646,17 +646,14 @@ public class StorageApiSinkSchemaUpdateIT {
                 })
             .withAutoSchemaUpdate(true)
             .ignoreUnknownValues()
-            .withMethod(Write.Method.STORAGE_API_AT_LEAST_ONCE)
+            .withMethod(useAtLeastOnce ? Write.Method.STORAGE_API_AT_LEAST_ONCE : Write.Method.STORAGE_WRITE_API)
             .withCreateDisposition(CreateDisposition.CREATE_NEVER)
             .withWriteDisposition(WriteDisposition.WRITE_APPEND);
     if (useInputSchema) {
       write = write.withSchema(inputSchema);
     }
     if (!useAtLeastOnce) {
-      write =
-          write
-              .withMethod(Write.Method.STORAGE_WRITE_API)
-              .withTriggeringFrequency(Duration.standardSeconds(1));
+      write = write.withTriggeringFrequency(changeTableSchema ? Duration.standardSeconds(10) : Duration.standardSeconds(1));
     }
 
     int numRows = TOTAL_N;
@@ -664,13 +661,13 @@ public class StorageApiSinkSchemaUpdateIT {
     Instant start = new Instant(0);
     // We give a healthy waiting period between each element to give Storage API streams a chance to
     // recognize the new schema. Apply on relevant tests.
-    Duration interval = changeTableSchema ? Duration.standardSeconds(1) : Duration.millis(1);
+    Duration interval = changeTableSchema ? Duration.standardSeconds(10) : Duration.millis(1);
     Duration stop =
-        changeTableSchema ? Duration.standardSeconds(numRows - 1) : Duration.millis(numRows - 1);
+        changeTableSchema ? Duration.standardSeconds((numRows - 1) * 10) : Duration.millis(numRows - 1);
     Function<Instant, Long> getIdFromInstant =
         changeTableSchema
             ? (Function<Instant, Long> & Serializable)
-                (Instant instant) -> instant.getMillis() / 1000
+                (Instant instant) -> instant.getMillis() / 10000
             : (Function<Instant, Long> & Serializable) Instant::getMillis;
 
     // Generates rows with original schema up for row IDs under ORIGINAL_N
