@@ -96,6 +96,9 @@ jobs:
           PY_VER=${{ matrix.python_version }}
           PY_VER_CLEAN=${PY_VER//.}
           echo "py_ver_clean=$PY_VER_CLEAN" >> $GITHUB_OUTPUT
+      - name: Generate Unique TAG
+        id: set_tag
+        run: echo "TAG=${{ github.sha }}-$(date +'%Y%m%d-%H%M%S%N')" >> $GITHUB_OUTPUT
       - name: Run pythonDockerBuildPreCommit
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
@@ -103,3 +106,4 @@ jobs:
           arguments: |
             -Pposargs=apache_beam/dataframe/ \
             -PpythonVersion=${{ matrix.python_version }}
+            -Pdocker-tag=${{ steps.set_tag.outputs.TAG }}
