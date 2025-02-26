@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+// some comment
 def pythonVersionSuffix = project.ext.pythonVersion.replace('.', '')
 
 description = "Apache Beam :: SDKs :: Python :: Container :: Python ${pythonVersionSuffix} Container"
