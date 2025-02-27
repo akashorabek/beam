@@ -44,6 +44,7 @@ import org.apache.beam.it.common.TestProperties;
 import org.apache.beam.it.common.utils.ResourceManagerUtils;
 import org.apache.beam.it.gcp.IOStressTestBase;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineWorkerPoolOptions;
+import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.io.Read;
 import org.apache.beam.sdk.io.gcp.bigquery.AvroWriteRequest;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
@@ -300,7 +301,7 @@ public final class BigQueryIOST extends IOStressTestBase {
     String experiments =
         configuration.writeMethod.equals(STORAGE_API_AT_LEAST_ONCE_METHOD)
             ? runnerV2Experiment + ",streaming_mode_at_least_once"
-            : runnerV2Experiment;
+            : GcpOptions.STREAMING_ENGINE_EXPERIMENT;
 
     PipelineLauncher.LaunchConfig options =
         PipelineLauncher.LaunchConfig.builder("write-bigquery")
