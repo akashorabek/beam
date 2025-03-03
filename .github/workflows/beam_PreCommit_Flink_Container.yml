@@ -113,15 +113,15 @@ jobs:
       - name: Generate TAG unique variable based on timestamp
         id: set_tag
         run: echo "TAG=$(date +'%Y%m%d-%H%M%S%N')" >> $GITHUB_OUTPUT
-#      - name: Run pythonDockerBuildPreCommit
-#        uses: ./.github/actions/gradle-command-self-hosted-action
-#        with:
-#          gradle-command: :sdks:python:container:py39:docker
-#          arguments: |
-#            -PpythonVersion=3.9 \
-#            -Pdocker-repository-root=gcr.io/apache-beam-testing/beam-sdk \
-#            -Pdocker-tag=${{ steps.set_tag.outputs.TAG }} \
-#            -Ppush-containers
+      - name: Run pythonDockerBuildPreCommit
+        uses: ./.github/actions/gradle-command-self-hosted-action
+        with:
+          gradle-command: :sdks:python:container:py39:docker
+          arguments: |
+            -PpythonVersion=3.9 \
+            -Pdocker-repository-root=gcr.io/apache-beam-testing/beam-sdk \
+            -Pdocker-tag=${{ steps.set_tag.outputs.TAG }} \
+            -Ppush-containers
       - name: Prepare test arguments
         uses: ./.github/actions/test-arguments-action
         with:
@@ -158,7 +158,7 @@ jobs:
           arguments: |
             -PloadTest.mainClass=apache_beam.testing.load_tests.combine_test \
             -Prunner=FlinkRunner \
-            '-PloadTest.args="--input_options=''{\\"num_records\\":200,\\"key_size\\":1,\\"value_size\\":9,\\"algorithm\\":\\"lcg\\"}'' --parallelism=2 --job_endpoint=localhost:8099 --environment_type=DOCKER --environment_config=gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:latest --top_count=10 --runner=PortableRunner" --job_name=flink-tests-python-${{env.NOW_UTC}}'
+            '-PloadTest.args="--input_options=''{\\"num_records\\":200,\\"key_size\\":1,\\"value_size\\":9,\\"algorithm\\":\\"lcg\\"}'' --parallelism=2 --job_endpoint=localhost:8099 --environment_type=DOCKER --environment_config=gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:${{ steps.set_tag.outputs.TAG }} --top_count=10 --runner=PortableRunner" --job_name=flink-tests-python-${{env.NOW_UTC}}'
 
       # Run a Java Combine load test to verify the Flink container
       - name: Run Flink Container Test with Java Combine
