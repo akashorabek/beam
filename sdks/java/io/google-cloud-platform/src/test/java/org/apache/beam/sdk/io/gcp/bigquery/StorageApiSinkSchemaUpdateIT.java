@@ -132,10 +132,6 @@ public class StorageApiSinkSchemaUpdateIT {
   // for dynamic destination test
   private static final int NUM_DESTINATIONS = 3;
   private static final int TOTAL_NUM_STREAMS = 6;
-  // wait up to 60 seconds
-  private static final int SCHEMA_PROPAGATION_TIMEOUT_MS = 60000;
-  // interval between checks
-  private static final int SCHEMA_PROPAGATION_CHECK_INTERVAL_MS = 5000;
   // wait for streams to recognize schema
   private static final int STREAM_RECOGNITION_DELAY_MS = 20000;
   // trigger for updating the schema when the row counter reaches this value
@@ -239,37 +235,11 @@ public class StorageApiSinkSchemaUpdateIT {
               entry.getKey(),
               BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class));
         }
-
-        // check that schema update propagated fully
-        long startTime = System.currentTimeMillis();
-        long timeoutMillis = SCHEMA_PROPAGATION_TIMEOUT_MS;
-        boolean schemaPropagated = false;
-        while (System.currentTimeMillis() - startTime < timeoutMillis) {
-          schemaPropagated = true;
-          for (Map.Entry<String, String> entry : newSchemas.entrySet()) {
-            TableSchema currentSchema =
-                bqClient.getTableResource(projectId, datasetId, entry.getKey()).getSchema();
-            TableSchema expectedSchema =
-                BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class);
-            if (currentSchema.getFields().size() != expectedSchema.getFields().size()) {
-              schemaPropagated = false;
-              break;
-            }
-          }
-          if (schemaPropagated) {
-            break;
-          }
-          Thread.sleep(SCHEMA_PROPAGATION_CHECK_INTERVAL_MS);
-        }
-        if (!schemaPropagated) {
-          LOG.warn("Schema update did not propagate fully within the timeout.");
-        } else {
-          LOG.info(
-              "Schema update propagated fully within the timeout - {}.",
-              System.currentTimeMillis() - startTime);
-          // wait for streams to recognize the new schema
-          Thread.sleep(STREAM_RECOGNITION_DELAY_MS);
-        }
+        // wait for streams to recognize the new schema
+        Thread.sleep(STREAM_RECOGNITION_DELAY_MS);
+        LOG.info(
+            "Waited {} milliseconds for schema to propagate.",
+            STREAM_RECOGNITION_DELAY_MS);
       }
 
       counter.write(++current);
