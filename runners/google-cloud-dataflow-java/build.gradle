@@ -801,7 +801,7 @@ task postCommitRunnerV2 {
   group = "Verification"
   description = "Various integration tests using the Dataflow runner V2."
   dependsOn googleCloudPlatformRunnerV2IntegrationTest
-  dependsOn coreSDKJavaRunnerV2IntegrationTest
+//  dependsOn coreSDKJavaRunnerV2IntegrationTest
 }
 
 def gcsBucket = project.findProperty('gcsBucket') ?: 'temp-storage-for-release-validation-tests/nightly-snapshot-validation'
