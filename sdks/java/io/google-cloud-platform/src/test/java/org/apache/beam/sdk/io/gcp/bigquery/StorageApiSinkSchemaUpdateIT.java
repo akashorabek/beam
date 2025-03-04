@@ -137,11 +137,11 @@ public class StorageApiSinkSchemaUpdateIT {
   // interval between checks
   private static final int SCHEMA_PROPAGATION_CHECK_INTERVAL_MS = 5000;
   // wait for streams to recognize schema
-  private static final int STREAM_RECOGNITION_DELAY_MS = 10000;
+  private static final int STREAM_RECOGNITION_DELAY_MS = 20000;
   // trigger for updating the schema when the row counter reaches this value
   private static final int SCHEMA_UPDATE_TRIGGER = 2;
   // Long wait (in seconds) for Storage API streams to recognize the new schema.
-  private static final int LONG_WAIT_SECONDS = 8;
+  private static final int LONG_WAIT_SECONDS = 10;
 
   private final Random randomGenerator = new Random();
 
@@ -474,7 +474,7 @@ public class StorageApiSinkSchemaUpdateIT {
               result.getFailedStorageApiInserts())
           .satisfies(new VerifyPCollectionSize(TOTAL_N - ORIGINAL_N, extraField));
     }
-    p.run().waitUntilFinish();
+    p.run().waitUntilFinish(Duration.standardSeconds(3000));
 
     // Check row completeness, non-duplication, and that schema update works as intended.
     int expectedCount = useIgnoreUnknownValues ? TOTAL_N : ORIGINAL_N;
@@ -732,7 +732,7 @@ public class StorageApiSinkSchemaUpdateIT {
     WriteResult result = rows.apply("Stream to BigQuery", write);
     // We ignore the extra fields, so no rows should have been sent to DLQ
     PAssert.that("Check DLQ is empty", result.getFailedStorageApiInserts()).empty();
-    p.run().waitUntilFinish();
+    p.run().waitUntilFinish(Duration.standardSeconds(3000));
 
     Map<String, Integer> expectedCounts = new HashMap<>(NUM_DESTINATIONS);
     for (int i = 0; i < numRows; i++) {
