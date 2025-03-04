@@ -444,7 +444,7 @@ public class StorageApiSinkSchemaUpdateIT {
               result.getFailedStorageApiInserts())
           .satisfies(new VerifyPCollectionSize(TOTAL_N - ORIGINAL_N, extraField));
     }
-    p.run().waitUntilFinish(Duration.standardSeconds(3000));
+    p.run().waitUntilFinish(Duration.standardMinutes(50));
 
     // Check row completeness, non-duplication, and that schema update works as intended.
     int expectedCount = useIgnoreUnknownValues ? TOTAL_N : ORIGINAL_N;
@@ -702,7 +702,7 @@ public class StorageApiSinkSchemaUpdateIT {
     WriteResult result = rows.apply("Stream to BigQuery", write);
     // We ignore the extra fields, so no rows should have been sent to DLQ
     PAssert.that("Check DLQ is empty", result.getFailedStorageApiInserts()).empty();
-    p.run().waitUntilFinish(Duration.standardSeconds(3000));
+    p.run().waitUntilFinish(Duration.standardMinutes(50));
 
     Map<String, Integer> expectedCounts = new HashMap<>(NUM_DESTINATIONS);
     for (int i = 0; i < numRows; i++) {
