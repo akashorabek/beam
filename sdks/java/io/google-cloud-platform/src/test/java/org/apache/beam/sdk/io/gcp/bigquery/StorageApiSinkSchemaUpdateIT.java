@@ -240,36 +240,11 @@ public class StorageApiSinkSchemaUpdateIT {
               BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class));
         }
 
-        // check that schema update propagated fully
-        long startTime = System.currentTimeMillis();
-        long timeoutMillis = SCHEMA_PROPAGATION_TIMEOUT_MS;
-        boolean schemaPropagated = false;
-        while (System.currentTimeMillis() - startTime < timeoutMillis) {
-          schemaPropagated = true;
-          for (Map.Entry<String, String> entry : newSchemas.entrySet()) {
-            TableSchema currentSchema =
-                bqClient.getTableResource(projectId, datasetId, entry.getKey()).getSchema();
-            TableSchema expectedSchema =
-                BigQueryHelpers.fromJsonString(entry.getValue(), TableSchema.class);
-            if (currentSchema.getFields().size() != expectedSchema.getFields().size()) {
-              schemaPropagated = false;
-              break;
-            }
-          }
-          if (schemaPropagated) {
-            break;
-          }
-          Thread.sleep(SCHEMA_PROPAGATION_CHECK_INTERVAL_MS);
-        }
-        if (!schemaPropagated) {
-          LOG.warn("Schema update did not propagate fully within the timeout.");
-        } else {
-          LOG.info(
-              "Schema update propagated fully within the timeout - {}.",
-              System.currentTimeMillis() - startTime);
-          // wait for streams to recognize the new schema
-          Thread.sleep(STREAM_RECOGNITION_DELAY_MS);
-        }
+        // wait for streams to recognize the new schema
+        Thread.sleep(STREAM_RECOGNITION_DELAY_MS);
+        LOG.info(
+            "Waited {} milliseconds for schema to propagate.",
+            STREAM_RECOGNITION_DELAY_MS);
       }
 
       counter.write(++current);
@@ -474,7 +449,7 @@ public class StorageApiSinkSchemaUpdateIT {
               result.getFailedStorageApiInserts())
           .satisfies(new VerifyPCollectionSize(TOTAL_N - ORIGINAL_N, extraField));
     }
-    p.run().waitUntilFinish(Duration.standardSeconds(3000));
+    p.run().waitUntilFinish(Duration.standardSeconds(2000));
 
     // Check row completeness, non-duplication, and that schema update works as intended.
     int expectedCount = useIgnoreUnknownValues ? TOTAL_N : ORIGINAL_N;
@@ -732,7 +707,7 @@ public class StorageApiSinkSchemaUpdateIT {
     WriteResult result = rows.apply("Stream to BigQuery", write);
     // We ignore the extra fields, so no rows should have been sent to DLQ
     PAssert.that("Check DLQ is empty", result.getFailedStorageApiInserts()).empty();
-    p.run().waitUntilFinish(Duration.standardSeconds(3000));
+    p.run().waitUntilFinish(Duration.standardSeconds(2000));
 
     Map<String, Integer> expectedCounts = new HashMap<>(NUM_DESTINATIONS);
     for (int i = 0; i < numRows; i++) {
