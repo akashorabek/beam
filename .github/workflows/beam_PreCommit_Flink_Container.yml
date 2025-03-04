@@ -158,7 +158,7 @@ jobs:
           arguments: >
             -PloadTest.mainClass=apache_beam.testing.load_tests.combine_test
             -Prunner=FlinkRunner
-            "-PloadTest.args=--input_options=\"{\\\"num_records\\\":200,\\\"key_size\\\":1,\\\"value_size\\\":9,\\\"algorithm\\\":\\\"lcg\\\"}\" --parallelism=2 --job_endpoint=localhost:8099 --environment_type=DOCKER --environment_config=gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:latest --top_count=10 --runner=PortableRunner --job_name=flink-tests-python-${{ env.NOW_UTC }}"
+            -PloadTest.args=--input_options="{\"num_records\":200,\"key_size\":1,\"value_size\":9,\"algorithm\":\"lcg\"}" --parallelism=2 --job_endpoint=localhost:8099 --environment_type=DOCKER --environment_config=gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:latest --top_count=10 --runner=PortableRunner --job_name=flink-tests-python-${{ env.NOW_UTC }}
 
       # Run a Java Combine load test to verify the Flink container
       - name: Run Flink Container Test with Java Combine
