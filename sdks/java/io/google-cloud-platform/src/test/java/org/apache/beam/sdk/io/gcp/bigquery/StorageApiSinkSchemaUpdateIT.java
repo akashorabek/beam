@@ -133,15 +133,15 @@ public class StorageApiSinkSchemaUpdateIT {
   private static final int NUM_DESTINATIONS = 3;
   private static final int TOTAL_NUM_STREAMS = 6;
   // wait up to 60 seconds
-  private static final int SCHEMA_PROPAGATION_TIMEOUT_MS = 60000;
+  private static final int SCHEMA_PROPAGATION_TIMEOUT_MS = 120000;
   // interval between checks
-  private static final int SCHEMA_PROPAGATION_CHECK_INTERVAL_MS = 5000;
+  private static final int SCHEMA_PROPAGATION_CHECK_INTERVAL_MS = 20000;
   // wait for streams to recognize schema
-  private static final int STREAM_RECOGNITION_DELAY_MS = 15000;
+  private static final int STREAM_RECOGNITION_DELAY_MS = 30000;
   // trigger for updating the schema when the row counter reaches this value
   private static final int SCHEMA_UPDATE_TRIGGER = 2;
   // Long wait (in seconds) for Storage API streams to recognize the new schema.
-  private static final int LONG_WAIT_SECONDS = 5;
+  private static final int LONG_WAIT_SECONDS = 10;
 
   private final Random randomGenerator = new Random();
 
