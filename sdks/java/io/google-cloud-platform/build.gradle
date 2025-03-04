@@ -197,7 +197,8 @@ task integrationTest(type: Test, dependsOn: processTestResources) {
   // Disable Gradle cache: these ITs interact with live service that should always be considered "out of date"
   outputs.upToDateWhen { false }
 
-  include '**/*IT.class'
+  include '**/StorageApiSinkSchemaUpdateIT.class'
+  include '**/StorageApiSinkRowUpdateIT.class'
   exclude '**/BigQueryIOReadIT.class'
   exclude '**/BigQueryIOStorageQueryIT.class'
   exclude '**/BigQueryIOStorageReadIT.class'
@@ -236,7 +237,8 @@ task integrationTestKms(type: Test) {
   // Disable Gradle cache: these ITs interact with live service that should always be considered "out of date"
   outputs.upToDateWhen { false }
 
-  include '**/*IT.class'
+  include '**/StorageApiSinkSchemaUpdateIT.class'
+  include '**/StorageApiSinkRowUpdateIT.class'
   maxParallelForks 4
   classpath = sourceSets.test.runtimeClasspath
   testClassesDirs = sourceSets.test.output.classesDirs
