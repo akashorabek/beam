@@ -132,10 +132,6 @@ public class StorageApiSinkSchemaUpdateIT {
   // for dynamic destination test
   private static final int NUM_DESTINATIONS = 3;
   private static final int TOTAL_NUM_STREAMS = 6;
-  // wait up to 60 seconds
-  private static final int SCHEMA_PROPAGATION_TIMEOUT_MS = 60000;
-  // interval between checks
-  private static final int SCHEMA_PROPAGATION_CHECK_INTERVAL_MS = 5000;
   // wait for streams to recognize schema
   private static final int STREAM_RECOGNITION_DELAY_MS = 15000;
   // trigger for updating the schema when the row counter reaches this value
