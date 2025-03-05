@@ -101,11 +101,6 @@ jobs:
           comment_phrase: ${{ matrix.job_phrase }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_job: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-      - name: Setup Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          install: true
-          driver: 'docker'
       - name: GCloud Docker credential helper
         run: |
           gcloud auth configure-docker us-central1-docker.pkg.dev
@@ -122,7 +117,7 @@ jobs:
           gradle-command: :sdks:python:container:py39:docker
           arguments: |
             -PpythonVersion=3.9 \
-            -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-tes \
+            -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test \
             -Pdocker-tag=${{ steps.set_tag.outputs.TAG }} \
             -Ppush-containers=true
       - name: Prepare test arguments
