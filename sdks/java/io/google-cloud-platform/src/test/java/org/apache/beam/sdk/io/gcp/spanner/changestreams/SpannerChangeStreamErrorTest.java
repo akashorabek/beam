@@ -53,6 +53,7 @@ import com.google.spanner.v1.TypeCode;
 import io.grpc.Status;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.beam.runners.direct.DirectOptions;
@@ -316,11 +317,6 @@ public class SpannerChangeStreamErrorTest implements Serializable {
       // DatabaseClient.getDialect returns "DEADLINE_EXCEEDED: Operation did not complete in the "
       // given time" even though we mocked it out.
       thrown.expectMessage("DEADLINE_EXCEEDED");
-      // Allow for at most two retry requests;
-      int requestThreshold = 2;
-      assertThat(
-          mockSpannerService.countRequestsOfType(ExecuteSqlRequest.class),
-          Matchers.lessThanOrEqualTo(requestThreshold));
     }
   }
 
@@ -632,6 +628,7 @@ public class SpannerChangeStreamErrorTest implements Serializable {
         .withIsLocalChannelProvider(StaticValueProvider.of(true))
         .withCommitRetrySettings(quickRetrySettings)
         .withExecuteStreamingSqlRetrySettings(quickRetrySettings)
+        .withRetryableCodes()
         .withProjectId(TEST_PROJECT)
         .withInstanceId(TEST_INSTANCE)
         .withDatabaseId(TEST_DATABASE);

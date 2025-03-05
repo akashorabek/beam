@@ -137,7 +137,7 @@ public class StorageApiSinkSchemaUpdateIT {
   // trigger for updating the schema when the row counter reaches this value
   private static final int SCHEMA_UPDATE_TRIGGER = 2;
   // Long wait (in seconds) for Storage API streams to recognize the new schema.
-  private static final int LONG_WAIT_SECONDS = 10;
+  private static final int LONG_WAIT_SECONDS = 5;
 
   private final Random randomGenerator = new Random();
 
