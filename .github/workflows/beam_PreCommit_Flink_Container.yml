@@ -113,13 +113,13 @@ jobs:
       - name: Generate TAG unique variable based on timestamp
         id: set_tag
         run: echo "TAG=$(date +'%Y%m%d-%H%M%S%N')" >> $GITHUB_OUTPUT
-      - name: Run pythonDockerBuildPreCommit
+      - name: Push docker
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
           gradle-command: :sdks:python:container:py39:docker
           arguments: |
             -PpythonVersion=3.9 \
-            -Pdocker-repository-root=gcr.io/apache-beam-testing/beam-sdk \
+            -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test \
             -Pdocker-tag=${{ steps.set_tag.outputs.TAG }} \
             -Ppush-containers
       - name: Prepare test arguments
@@ -158,7 +158,7 @@ jobs:
           arguments: |
             -PloadTest.mainClass=apache_beam.testing.load_tests.combine_test \
             -Prunner=FlinkRunner \
-            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_2 }} --environment_config=gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:${{ steps.set_tag.outputs.TAG }} --job_name=flink-tests-python-${{env.NOW_UTC}}'
+            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_2 }} --environment_config=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test/beam_python3.9_sdk:${{ steps.set_tag.outputs.TAG }} --job_name=flink-tests-python-${{env.NOW_UTC}}'
 
       # Run a Java Combine load test to verify the Flink container
       - name: Run Flink Container Test with Java Combine
@@ -176,6 +176,6 @@ jobs:
         run: |
           ${{ github.workspace }}/.test-infra/dataproc/flink_cluster.sh delete
 
-      - name: Cleanup Python SDK Container (PR Only)
-        run: |
-          gcloud container images delete gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:${{ steps.set_tag.outputs.TAG }} --force-delete-tags --quiet
+#      - name: Cleanup Python SDK Container (PR Only)
+#        run: |
+#          gcloud container images delete gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:${{ steps.set_tag.outputs.TAG }} --force-delete-tags --quiet
