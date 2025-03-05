@@ -119,7 +119,7 @@ jobs:
           gradle-command: :sdks:python:container:py39:docker
           arguments: |
             -PpythonVersion=3.9 \
-            -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test \
+            -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-tes \
             -Pdocker-tag=${{ steps.set_tag.outputs.TAG }} \
             -Ppush-containers
       - name: Prepare test arguments
