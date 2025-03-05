@@ -628,7 +628,6 @@ public class SpannerChangeStreamErrorTest implements Serializable {
         .withIsLocalChannelProvider(StaticValueProvider.of(true))
         .withCommitRetrySettings(quickRetrySettings)
         .withExecuteStreamingSqlRetrySettings(quickRetrySettings)
-        .withRetryableCodes()
         .withProjectId(TEST_PROJECT)
         .withInstanceId(TEST_INSTANCE)
         .withDatabaseId(TEST_DATABASE);
