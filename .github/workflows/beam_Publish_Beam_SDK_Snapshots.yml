@@ -45,7 +45,7 @@ env:
   DEVELOCITY_ACCESS_KEY: ${{ secrets.DEVELOCITY_ACCESS_KEY }}
   GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GE_CACHE_USERNAME }}
   GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GE_CACHE_PASSWORD }}
-  docker_registry: gcr.io
+  docker_registry: us-central1-docker.pkg.dev
 
 jobs:
   beam_Publish_Beam_SDK_Snapshots:
@@ -118,7 +118,7 @@ jobs:
           gradle-command: :sdks:${{ matrix.container_task }}:docker
           arguments: |
             -Pjava11Home=$JAVA_HOME_11_X64 \
-            -Pdocker-repository-root=gcr.io/apache-beam-testing/beam-sdk \
+            -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test \
             -Pdocker-tag-list=${{ github.sha }},${BEAM_VERSION},latest \
             -Pcontainer-architecture-list=arm64,amd64 \
             -Ppush-containers \
