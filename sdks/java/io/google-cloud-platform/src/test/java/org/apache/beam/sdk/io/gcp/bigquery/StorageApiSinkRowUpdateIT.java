@@ -198,7 +198,6 @@ public class StorageApiSinkRowUpdateIT {
                 .withClustering(new Clustering().setFields(primaryKey))
                 .withMethod(BigQueryIO.Write.Method.STORAGE_WRITE_API)
                 .withNumStorageWriteApiStreams(1)
-                .withTriggeringFrequency(Duration.standardSeconds(1))
                 .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
 
     runPipelineAndWait(p);
