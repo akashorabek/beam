@@ -33,6 +33,7 @@ import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableList;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Iterables;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Lists;
+import org.joda.time.Duration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -132,7 +133,9 @@ public class StorageApiSinkRowUpdateIT {
                 .withSchema(tableSchema)
                 .withPrimaryKey(primaryKey)
                 .withClustering(new Clustering().setFields(primaryKey))
-                .withMethod(BigQueryIO.Write.Method.STORAGE_API_AT_LEAST_ONCE)
+                .withMethod(BigQueryIO.Write.Method.STORAGE_WRITE_API)
+                .withNumStorageWriteApiStreams(1)
+                .withTriggeringFrequency(Duration.standardSeconds(1))
                 .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
 
     runPipelineAndWait(p);
@@ -193,7 +196,9 @@ public class StorageApiSinkRowUpdateIT {
                 .withSchema(tableSchema)
                 .withPrimaryKey(primaryKey)
                 .withClustering(new Clustering().setFields(primaryKey))
-                .withMethod(BigQueryIO.Write.Method.STORAGE_API_AT_LEAST_ONCE)
+                .withMethod(BigQueryIO.Write.Method.STORAGE_WRITE_API)
+                .withNumStorageWriteApiStreams(1)
+                .withTriggeringFrequency(Duration.standardSeconds(1))
                 .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
 
     runPipelineAndWait(p);
