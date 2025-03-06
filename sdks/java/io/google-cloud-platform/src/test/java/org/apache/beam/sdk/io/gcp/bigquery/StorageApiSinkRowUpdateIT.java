@@ -50,6 +50,9 @@ public class StorageApiSinkRowUpdateIT {
       TestPipeline.testingPipelineOptions().as(GcpOptions.class).getProject();
   private static final String BIG_QUERY_DATASET_ID =
       "storage_api_sink_rows_update" + System.nanoTime();
+  private static final int MAX_CHECK_ATTEMPTS = 10;
+  private static final int WAIT_INTERVAL_MILLIS = 1000;
+  private static final int PIPELINE_FLUSH_WAIT_MILLIS = 5000;
 
   // used when test suite specifies a particular GCP location for BigQuery operations
   private static String bigQueryLocation;
@@ -195,13 +198,22 @@ public class StorageApiSinkRowUpdateIT {
 
   private void assertRowsWritten(String tableSpec, Iterable<TableRow> expected)
       throws IOException, InterruptedException {
-    List<TableRow> queryResponse =
-        BQ_CLIENT.queryUnflattened(
-            String.format("SELECT * FROM %s", tableSpec), PROJECT, true, true, bigQueryLocation);
+    List<TableRow> queryResponse = null;
+
+    for (int i = 0; i < MAX_CHECK_ATTEMPTS; i++) {
+      queryResponse = BQ_CLIENT.queryUnflattened(
+          String.format("SELECT * FROM %s", tableSpec), PROJECT, true, true, bigQueryLocation);
+      if (queryResponse.size() == Iterables.size(expected)) {
+        break;
+      }
+      Thread.sleep(WAIT_INTERVAL_MILLIS);
+    }
+
+    // Final assertion: either the expected rows are found or fail the test.
     assertThat(queryResponse, containsInAnyOrder(Iterables.toArray(expected, TableRow.class)));
   }
 
-  private void runPipelineAndWait(Pipeline p) {
+  private void runPipelineAndWait(Pipeline p) throws InterruptedException {
     try {
       PipelineResult result = p.run();
       result.waitUntilFinish();
@@ -214,6 +226,8 @@ public class StorageApiSinkRowUpdateIT {
       // Tolerate a StreamWriterClosedException, which sometimes happens after all writes have been
       // flushed.
       if (root instanceof Exceptions.StreamWriterClosedException) {
+        // Wait a bit longer to allow pending writes to finish flushing.
+        Thread.sleep(PIPELINE_FLUSH_WAIT_MILLIS);
         return;
       }
       throw e;
