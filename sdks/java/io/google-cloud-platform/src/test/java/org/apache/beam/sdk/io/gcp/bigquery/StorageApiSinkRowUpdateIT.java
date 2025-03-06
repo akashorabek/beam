@@ -202,8 +202,8 @@ public class StorageApiSinkRowUpdateIT {
   }
 
   private void runPipelineAndWait(Pipeline p) {
-    PipelineResult result = p.run();
     try {
+      PipelineResult result = p.run();
       result.waitUntilFinish();
     } catch (Pipeline.PipelineExecutionException e) {
       Throwable root = e.getCause();

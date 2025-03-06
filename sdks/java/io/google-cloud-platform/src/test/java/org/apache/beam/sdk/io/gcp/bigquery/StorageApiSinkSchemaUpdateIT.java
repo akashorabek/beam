@@ -373,7 +373,7 @@ public class StorageApiSinkSchemaUpdateIT {
     if (p.getOptions().getRunner().getName().contains("DataflowRunner")) {
       assumeTrue(
           "Skipping in favor of more relevant test case",
-          changeTableSchema && useInputSchema && useAutoSchemaUpdate);
+          !(changeTableSchema && useInputSchema) && useAutoSchemaUpdate);
     }
 
     List<String> fieldNamesOrigin = new ArrayList<String>(Arrays.asList(FIELDS));
@@ -621,7 +621,7 @@ public class StorageApiSinkSchemaUpdateIT {
     // Only run the most relevant test case on Dataflow
     if (p.getOptions().getRunner().getName().contains("DataflowRunner")) {
       assumeTrue(
-          "Skipping in favor of more relevant test case", changeTableSchema && useInputSchema);
+          "Skipping in favor of more relevant test case", !(changeTableSchema && useInputSchema));
     }
 
     List<String> fieldNamesOrigin = new ArrayList<String>(Arrays.asList(FIELDS));
