@@ -87,7 +87,7 @@ jobs:
       github.event_name == 'schedule' ||
       github.event_name == 'pull_request_target' ||
       github.event.comment.body == 'Run Flink Container PreCommit'
-    runs-on: [self-hosted, ubuntu-20.04, main]
+    runs-on: ubuntu-22.04
     timeout-minutes: 45
     name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
     strategy:
@@ -128,10 +128,9 @@ jobs:
         with:
           gradle-command: :sdks:python:container:py39:docker
           arguments: |
-            -Pjava11Home=$JAVA_HOME_11_X64 \
             -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test \
             -Pdocker-tag-list=${{ github.sha }},${BEAM_VERSION},latest \
-            -Pcontainer-architecture-list=amd64 \
+            -Pcontainer-architecture-list=arm64,amd64 \
             -Ppush-containers=true \
       - name: Prepare test arguments
         uses: ./.github/actions/test-arguments-action
