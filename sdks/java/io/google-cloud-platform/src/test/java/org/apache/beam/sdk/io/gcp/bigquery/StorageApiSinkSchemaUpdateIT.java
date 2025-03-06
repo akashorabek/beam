@@ -369,11 +369,11 @@ public class StorageApiSinkSchemaUpdateIT {
     // Need to manually enable streaming engine for legacy dataflow runner
     ExperimentalOptions.addExperiment(
         p.getOptions().as(ExperimentalOptions.class), GcpOptions.STREAMING_ENGINE_EXPERIMENT);
-    // Skipping tests on Dataflow because they are flaky due to asynchronous schema setup timing issues.
-    // These tests are more stable on the DirectRunner, where timing is less variable.
+    // Only run the most relevant test case on Dataflow
     if (p.getOptions().getRunner().getName().contains("DataflowRunner")) {
       assumeTrue(
-          "Skipping tests in Dataflow", false);
+          "Skipping in favor of more relevant test case and to avoid timing issues",
+          !changeTableSchema && useInputSchema && useAutoSchemaUpdate);
     }
 
     List<String> fieldNamesOrigin = new ArrayList<String>(Arrays.asList(FIELDS));
@@ -618,11 +618,11 @@ public class StorageApiSinkSchemaUpdateIT {
     // Need to manually enable streaming engine for legacy dataflow runner
     ExperimentalOptions.addExperiment(
         p.getOptions().as(ExperimentalOptions.class), GcpOptions.STREAMING_ENGINE_EXPERIMENT);
-    // Skipping tests on Dataflow because they are flaky due to asynchronous schema setup timing issues.
+    // Skipping dynamic destinations tests on Dataflow because of timing issues.
     // These tests are more stable on the DirectRunner, where timing is less variable.
     if (p.getOptions().getRunner().getName().contains("DataflowRunner")) {
       assumeTrue(
-          "Skipping tests in Dataflow", false);
+          "Skipping dynamic destinations tests on Dataflow", false);
     }
 
     List<String> fieldNamesOrigin = new ArrayList<String>(Arrays.asList(FIELDS));
