@@ -20,7 +20,10 @@ package org.apache.beam.sdk.io.gcp.bigquery;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
-import com.google.api.services.bigquery.model.*;
+import com.google.api.services.bigquery.model.Clustering;
+import com.google.api.services.bigquery.model.TableFieldSchema;
+import com.google.api.services.bigquery.model.TableRow;
+import com.google.api.services.bigquery.model.TableSchema;
 import com.google.cloud.bigquery.storage.v1.Exceptions;
 import java.io.IOException;
 import java.util.List;
@@ -33,7 +36,6 @@ import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableList;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Iterables;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Lists;
-import org.joda.time.Duration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,9 +50,9 @@ public class StorageApiSinkRowUpdateIT {
       TestPipeline.testingPipelineOptions().as(GcpOptions.class).getProject();
   private static final String BIG_QUERY_DATASET_ID =
       "storage_api_sink_rows_update" + System.nanoTime();
-  private static final int MAX_CHECK_ATTEMPTS = 10;
-  private static final int WAIT_INTERVAL_MILLIS = 1000;
-  private static final int PIPELINE_FLUSH_WAIT_MILLIS = 5000;
+  private static final int MAX_CHECK_ATTEMPTS = 5;
+  private static final int WAIT_INTERVAL_MILLIS = 10000;
+  private static final int PIPELINE_FLUSH_WAIT_MILLIS = 15000;
 
   // used when test suite specifies a particular GCP location for BigQuery operations
   private static String bigQueryLocation;
@@ -68,21 +70,8 @@ public class StorageApiSinkRowUpdateIT {
     BQ_CLIENT.deleteDataset(PROJECT, BIG_QUERY_DATASET_ID);
   }
 
-  private static String createTable(TableSchema tableSchema)
-      throws IOException, InterruptedException {
-    String table = "table" + System.nanoTime();
-    BQ_CLIENT.deleteTable(PROJECT, BIG_QUERY_DATASET_ID, table);
-    BQ_CLIENT.createNewTable(
-        PROJECT,
-        BIG_QUERY_DATASET_ID,
-        new Table()
-            .setSchema(tableSchema)
-            .setTableReference(
-                new TableReference()
-                    .setTableId(table)
-                    .setDatasetId(BIG_QUERY_DATASET_ID)
-                    .setProjectId(PROJECT)));
-    return PROJECT + "." + BIG_QUERY_DATASET_ID + "." + table;
+  private static String getTablespec() {
+    return PROJECT + "." + BIG_QUERY_DATASET_ID + "." + "table" + System.nanoTime();
   }
 
   @Test
@@ -94,7 +83,6 @@ public class StorageApiSinkRowUpdateIT {
                     new TableFieldSchema().setName("key1").setType("STRING"),
                     new TableFieldSchema().setName("key2").setType("STRING"),
                     new TableFieldSchema().setName("value").setType("STRING")));
-    String tableSpec = createTable(tableSchema);
 
     List<RowMutation> items =
         Lists.newArrayList(
@@ -124,6 +112,7 @@ public class StorageApiSinkRowUpdateIT {
                 RowMutationInformation.of(RowMutationInformation.MutationType.DELETE, 1)));
 
     List<String> primaryKey = Lists.newArrayList("key1", "key2");
+    String tableSpec = getTablespec();
     Pipeline p = Pipeline.create();
     p.apply("Create rows", Create.of(items))
         .apply(
@@ -133,10 +122,8 @@ public class StorageApiSinkRowUpdateIT {
                 .withSchema(tableSchema)
                 .withPrimaryKey(primaryKey)
                 .withClustering(new Clustering().setFields(primaryKey))
-                .withMethod(BigQueryIO.Write.Method.STORAGE_WRITE_API)
-                .withNumStorageWriteApiStreams(1)
-                .withTriggeringFrequency(Duration.standardSeconds(1))
-                .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
+                .withMethod(BigQueryIO.Write.Method.STORAGE_API_AT_LEAST_ONCE)
+                .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED));
 
     runPipelineAndWait(p);
 
@@ -157,7 +144,6 @@ public class StorageApiSinkRowUpdateIT {
                     new TableFieldSchema().setName("key1").setType("STRING"),
                     new TableFieldSchema().setName("key2").setType("STRING"),
                     new TableFieldSchema().setName("value").setType("STRING")));
-    String tableSpec = createTable(tableSchema);
 
     List<RowMutation> items =
         Lists.newArrayList(
@@ -187,6 +173,7 @@ public class StorageApiSinkRowUpdateIT {
                 RowMutationInformation.of(RowMutationInformation.MutationType.DELETE, "AAA/1")));
 
     List<String> primaryKey = Lists.newArrayList("key1", "key2");
+    String tableSpec = getTablespec();
     Pipeline p = Pipeline.create();
     p.apply("Create rows", Create.of(items))
         .apply(
@@ -196,9 +183,8 @@ public class StorageApiSinkRowUpdateIT {
                 .withSchema(tableSchema)
                 .withPrimaryKey(primaryKey)
                 .withClustering(new Clustering().setFields(primaryKey))
-                .withMethod(BigQueryIO.Write.Method.STORAGE_WRITE_API)
-                .withNumStorageWriteApiStreams(1)
-                .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_NEVER));
+                .withMethod(BigQueryIO.Write.Method.STORAGE_API_AT_LEAST_ONCE)
+                .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED));
 
     runPipelineAndWait(p);
 
