@@ -131,7 +131,8 @@ jobs:
             -PpythonVersion=3.9 \
             -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test \
             -Pdocker-tag=${{ steps.set_tag.outputs.TAG }} \
-            -Ppush-containers=true \
+            -Pcontainer-architecture-list=amd64 \
+            -Ppush-containers=true
         env:
           USER: github-actions
       - name: Prepare test arguments
