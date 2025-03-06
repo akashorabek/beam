@@ -86,7 +86,7 @@ jobs:
       github.event_name == 'schedule' ||
       github.event_name == 'pull_request_target' ||
       github.event.comment.body == 'Run Flink Container PreCommit'
-    runs-on: [self-hosted, ubuntu-20.04, main]
+    runs-on: ubuntu-22.04
     timeout-minutes: 45
     name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
     strategy:
@@ -101,10 +101,6 @@ jobs:
           comment_phrase: ${{ matrix.job_phrase }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_job: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-      - name: Setup environment
-        uses: ./.github/actions/setup-environment-action
-        with:
-          python-version: 3.9
       - name: Install docker compose
         run: |
           sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
@@ -123,6 +119,10 @@ jobs:
       - name: Generate TAG unique variable based on timestamp
         id: set_tag
         run: echo "TAG=$(date +'%Y%m%d-%H%M%S%N')" >> $GITHUB_OUTPUT
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment-action
+        with:
+          python-version: 3.9
       - name: Push docker
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
@@ -131,7 +131,7 @@ jobs:
             -PpythonVersion=3.9 \
             -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test \
             -Pdocker-tag=${{ steps.set_tag.outputs.TAG }} \
-            -Ppush-containers \
+            -Ppush-containers=true \
         env:
           USER: github-actions
       - name: Prepare test arguments
