@@ -683,8 +683,8 @@ task googleCloudPlatformRunnerV2IntegrationTest(type: Test) {
 
   systemProperty "beamTestPipelineOptions", JsonOutput.toJson(runnerV2PipelineOptions)
 
-//  include '**/StorageApiSinkSchemaUpdateIT.class'
-  include '**/StorageApiSinkRowUpdateIT.class'
+  include '**/StorageApiSinkSchemaUpdateIT.class'
+//  include '**/StorageApiSinkRowUpdateIT.class'
 //  include '**/*IT.class'
   exclude '**/BigQueryIOStorageReadTableRowIT.class'
   exclude '**/SpannerWriteIT.class'
