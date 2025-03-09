@@ -230,15 +230,6 @@ class BeamDockerPlugin implements Plugin<Project> {
       if (!ext.platform.isEmpty()) {
         buildCommandLine.addAll('--platform', String.join(',', ext.platform))
       }
-      if (ext.load) {
-        buildCommandLine.add '--load'
-      }
-      if (ext.push) {
-        buildCommandLine.add '--push'
-        if (ext.load) {
-          throw new Exception("cannot combine 'push' and 'load' options")
-        }
-      }
       if (ext.builder != null) {
         buildCommandLine.addAll('--builder', ext.builder)
       }
@@ -252,6 +243,15 @@ class BeamDockerPlugin implements Plugin<Project> {
       // TARGETOS and TARGETARCH args not present through `docker build`, add here
       ext.buildArgs.put('TARGETOS', 'linux')
       ext.buildArgs.put('TARGETARCH', ext.project.nativeArchitecture())
+    }
+    if (ext.load) {
+      buildCommandLine.add '--load'
+    }
+    if (ext.push) {
+      buildCommandLine.add '--push'
+      if (ext.load) {
+        throw new Exception("cannot combine 'push' and 'load' options")
+      }
     }
     if (ext.noCache) {
       buildCommandLine.add '--no-cache'

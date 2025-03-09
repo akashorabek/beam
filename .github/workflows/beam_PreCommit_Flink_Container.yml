@@ -130,7 +130,7 @@ jobs:
           arguments: |
             -Pdocker-repository-root=us-central1-docker.pkg.dev/apache-beam-testing/akarys-test \
             -Pdocker-tag-list=${{ github.sha }},${BEAM_VERSION},latest \
-            -Ppush-containers=true \
+            -Ppush-containers
       - name: Prepare test arguments
         uses: ./.github/actions/test-arguments-action
         with:
