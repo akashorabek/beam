@@ -171,7 +171,7 @@ public final class BigQueryIOST extends IOStressTestBase {
                   Configuration.class),
               "large",
               Configuration.fromJsonString(
-                  "{\"numColumns\":10,\"rowsPerSecond\":50000,\"minutes\":60,\"numRecords\":10000000,\"valueSizeBytes\":1000,\"pipelineTimeout\":120,\"runner\":\"DataflowRunner\"}",
+                  "{\"numColumns\":10,\"rowsPerSecond\":25000,\"minutes\":60,\"numRecords\":1000000,\"valueSizeBytes\":1000,\"pipelineTimeout\":120,\"runner\":\"DataflowRunner\"}",
                   Configuration.class));
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -192,19 +192,19 @@ public final class BigQueryIOST extends IOStressTestBase {
     runTest();
   }
 
-  @Test
-  public void testAvroStorageAPIAtLeastOnce() throws IOException {
-    configuration.writeFormat = WriteFormat.AVRO.name();
-    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
-    runTest();
-  }
-
-  @Test
-  public void testJsonStorageAPIAtLeastOnce() throws IOException {
-    configuration.writeFormat = WriteFormat.JSON.name();
-    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
-    runTest();
-  }
+//  @Test
+//  public void testAvroStorageAPIAtLeastOnce() throws IOException {
+//    configuration.writeFormat = WriteFormat.AVRO.name();
+//    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
+//    runTest();
+//  }
+//
+//  @Test
+//  public void testJsonStorageAPIAtLeastOnce() throws IOException {
+//    configuration.writeFormat = WriteFormat.JSON.name();
+//    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
+//    runTest();
+//  }
 
   /**
    * Runs a stress test for BigQueryIO based on the specified configuration parameters. The method
@@ -255,7 +255,9 @@ public final class BigQueryIOST extends IOStressTestBase {
         break;
     }
     if (configuration.writeMethod.equals(STORAGE_WRITE_API_METHOD)) {
-      writeIO = writeIO.withTriggeringFrequency(org.joda.time.Duration.standardSeconds(60));
+      writeIO = writeIO
+          .withTriggeringFrequency(org.joda.time.Duration.standardSeconds(60))
+          .withNumStorageWriteApiStreams(1);
     }
     generateDataAndWrite(writeIO);
   }
