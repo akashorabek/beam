@@ -171,7 +171,7 @@ jobs:
             -Prunner=FlinkRunner \
             '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_2 }} --environment_config=${{ env.DOCKER_REPOSITORY_ROOT }}/beam_python${{ env.PYTHON_VERSION }}_sdk:${{ env.PYTHON_SDK_IMAGE_TAG }} --job_name=flink-tests-python-${{env.NOW_UTC}}'
 
-      # Run a Java Combine load test to verify the Flink container
+      # Run a Java Combine load test to verify the Flink container.
       - name: Run Flink Container Test with Java Combine
         timeout-minutes: 20
         uses: ./.github/actions/gradle-command-self-hosted-action
