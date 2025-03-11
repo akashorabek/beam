@@ -58,7 +58,7 @@ def make_state_event(state, timestamp):
   else:
     raise ValueError(
         "Expected apache_beam.utils.timestamp.Timestamp, "
-        "or google.protobuf.timestamp_pb2.Timestamp. "
+        "or google.protobuf.timestamp_pb2.Timestamp "
         "Got %s" % type(timestamp))
 
   return beam_job_api_pb2.JobStateEvent(state=state, timestamp=proto_timestamp)
