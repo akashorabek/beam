@@ -16,7 +16,7 @@
 
 """Implementation of an Artifact{Staging,Retrieval}Service.
 
-The staging service here can be backed by any beam filesystem.
+The staging service here can be backed by any beam filesystem
 """
 
 # pytype: skip-file
