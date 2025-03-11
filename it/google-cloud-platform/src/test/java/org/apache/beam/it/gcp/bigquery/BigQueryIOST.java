@@ -257,7 +257,7 @@ public final class BigQueryIOST extends IOStressTestBase {
     if (configuration.writeMethod.equals(STORAGE_WRITE_API_METHOD)) {
       writeIO = writeIO
           .withTriggeringFrequency(org.joda.time.Duration.standardSeconds(60))
-          .withNumStorageWriteApiStreams(1);
+          .withNumStorageWriteApiStreams(5);
     }
     generateDataAndWrite(writeIO);
   }
