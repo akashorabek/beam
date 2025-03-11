@@ -77,8 +77,8 @@ env:
   HARNESS_IMAGES_TO_PULL: gcr.io/apache-beam-testing/beam-sdk/beam_go_sdk:latest
   JOB_SERVER_IMAGE: gcr.io/apache-beam-testing/beam_portability/beam_flink1.17_job_server:latest
   ARTIFACTS_DIR: gs://beam-flink-cluster/beam-precommit-flink-container-${{ github.run_id }}
-  DOCKER_REGISTRY: gcr.io
-  DOCKER_REPOSITORY_ROOT: ${{ github.event_name == 'pull_request_target' && 'gcr.io/apache-beam-testing/beam-sdk-pr' || 'gcr.io/apache-beam-testing/beam-sdk' }}
+  DOCKER_REGISTRY: ${{ github.event_name == 'pull_request_target' && 'us.gcr.io' || 'gcr.io' }}
+  DOCKER_REPOSITORY_ROOT: ${{ github.event_name == 'pull_request_target' && 'us.gcr.io/apache-beam-testing/github-actions' || 'gcr.io/apache-beam-testing/beam-sdk' }}
   PYTHON_VERSION: 3.9
   PYTHON_SDK_IMAGE_TAG: latest
 
