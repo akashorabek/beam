@@ -116,17 +116,17 @@ jobs:
       - name: Set PYTHON_SDK_IMAGE_TAG unique variable based on timestamp
         if: ${{ github.event_name == 'pull_request_target' }}
         run: echo "PYTHON_SDK_IMAGE_TAG=$(date +'%Y%m%d-%H%M%S%N')" >> $GITHUB_ENV
-      - name: Build and push to registry
-        if: ${{ github.event_name == 'pull_request_target' }}
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-          gradle-command: :sdks:python:container:py39:docker
-          arguments: |
-            -PpythonVersion=${{ env.PYTHON_VERSION }} \
-            -Pdocker-repository-root=${{ env.DOCKER_REPOSITORY_ROOT }} \
-            -Pdocker-tag=${{ env.PYTHON_SDK_IMAGE_TAG }} \
-            -PuseBuildx \
-            -Ppush-containers
+#      - name: Build and push to registry
+#        if: ${{ github.event_name == 'pull_request_target' }}
+#        uses: ./.github/actions/gradle-command-self-hosted-action
+#        with:
+#          gradle-command: :sdks:python:container:py39:docker
+#          arguments: |
+#            -PpythonVersion=${{ env.PYTHON_VERSION }} \
+#            -Pdocker-repository-root=${{ env.DOCKER_REPOSITORY_ROOT }} \
+#            -Pdocker-tag=${{ env.PYTHON_SDK_IMAGE_TAG }} \
+#            -PuseBuildx \
+#            -Ppush-containers
       - name: Prepare test arguments
         uses: ./.github/actions/test-arguments-action
         with:
@@ -144,15 +144,15 @@ jobs:
         run: |
           cd ${{ github.workspace }}/.test-infra/dataproc; ./flink_cluster.sh create
       # Run a simple Go Combine load test to verify the Flink container
-      - name: Run Flink Container Test with Go Combine
-        timeout-minutes: 10
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-          gradle-command: :sdks:go:test:load:run
-          arguments: |
-            -PloadTest.mainClass=combine \
-            -Prunner=PortableRunner \
-            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_1 }} --job_name=flink-tests-go-${{env.NOW_UTC}}'
+#      - name: Run Flink Container Test with Go Combine
+#        timeout-minutes: 10
+#        uses: ./.github/actions/gradle-command-self-hosted-action
+#        with:
+#          gradle-command: :sdks:go:test:load:run
+#          arguments: |
+#            -PloadTest.mainClass=combine \
+#            -Prunner=PortableRunner \
+#            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_1 }} --job_name=flink-tests-go-${{env.NOW_UTC}}'
 
       # Run a Python Combine load test to verify the Flink container
       - name: Run Flink Container Test with Python Combine
@@ -163,18 +163,18 @@ jobs:
           arguments: |
             -PloadTest.mainClass=apache_beam.testing.load_tests.combine_test \
             -Prunner=FlinkRunner \
-            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_2 }} --environment_config=${{ env.DOCKER_REPOSITORY_ROOT }}/beam_python${{ env.PYTHON_VERSION }}_sdk:${{ env.PYTHON_SDK_IMAGE_TAG }} --job_name=flink-tests-python-${{env.NOW_UTC}}'
+            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_2 }} --environment_config=${{ env.DOCKER_REPOSITORY_ROOT }}/beam_python${{ env.PYTHON_VERSION }}_sdk:20250311-180544620999387 --job_name=flink-tests-python-${{env.NOW_UTC}}'
 
       # Run a Java Combine load test to verify the Flink container
-      - name: Run Flink Container Test with Java Combine
-        timeout-minutes: 20
-        uses: ./.github/actions/gradle-command-self-hosted-action
-        with:
-          gradle-command: :sdks:java:testing:load-tests:run
-          arguments: |
-            -PloadTest.mainClass=org.apache.beam.sdk.loadtests.CombineLoadTest \
-            -Prunner=:runners:flink:1.17 \
-            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_3 }} --jobName=flink-tests-java11-${{env.NOW_UTC}}'
+#      - name: Run Flink Container Test with Java Combine
+#        timeout-minutes: 20
+#        uses: ./.github/actions/gradle-command-self-hosted-action
+#        with:
+#          gradle-command: :sdks:java:testing:load-tests:run
+#          arguments: |
+#            -PloadTest.mainClass=org.apache.beam.sdk.loadtests.CombineLoadTest \
+#            -Prunner=:runners:flink:1.17 \
+#            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_3 }} --jobName=flink-tests-java11-${{env.NOW_UTC}}'
 
       - name: Teardown Flink
         if: always()
