@@ -157,6 +157,7 @@ function create() {
   upload_init_actions
   create_cluster
   get_leader
+  gcloud compute ssh --zone=$GCLOUD_ZONE --quiet yarn@$MASTER_NAME --command="gcloud auth configure-docker us.gcr.io"
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
 }
