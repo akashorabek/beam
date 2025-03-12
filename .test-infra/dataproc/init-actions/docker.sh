@@ -77,8 +77,8 @@ function configure_gcr() {
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
   # Configure docker to use the credential helper for both registries
-  docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io
-  su yarn --command "docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io"
+  docker-credential-gcr configure-docker --registries=us.gcr.io
+  su yarn --command "docker-credential-gcr configure-docker --registries=us.gcr.io"
 }
 
 function configure_docker() {
@@ -86,12 +86,6 @@ function configure_docker() {
   usermod -aG docker yarn
   # configure docker to use Google Cloud Registry
   configure_gcr
-
-  echo "Running gcloud auth configure-docker us.gcr.io for root..."
-  gcloud auth configure-docker us.gcr.io
-
-  echo "Running gcloud auth configure-docker us.gcr.io for yarn..."
-  sudo -u yarn gcloud auth configure-docker us.gcr.io
 
   # Optional: Verify that the Docker config file exists for root.
   if [ -f /root/.docker/config.json ]; then
