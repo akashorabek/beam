@@ -157,16 +157,6 @@ function create() {
   upload_init_actions
   create_cluster
   get_leader
-  docker-credential-gcr gcr-login
-  su yarn --command "docker-credential-gcr gcr-login"
-  docker-credential-gcr config --token-source="store"
-  su yarn --command "docker-credential-gcr config --token-source=\"store\""
-  docker-credential-gcr configure-docker --registries="us.gcr.io"
-  su yarn --command "docker-credential-gcr configure-docker --registries=\"us.gcr.io\""
-  echo "Fetching credentials for https://gcr.io:"
-  echo "https://gcr.io" | docker-credential-gcr get
-  echo "Fetching credentials for https://us.gcr.io:"
-  echo "https://us.gcr.io" | docker-credential-gcr get
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
 }
