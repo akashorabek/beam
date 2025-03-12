@@ -126,6 +126,12 @@ function create_cluster() {
   [[ -n "${HARNESS_IMAGES_TO_PULL:=}" ]] && metadata+=",beam-sdk-harness-images-to-pull=${HARNESS_IMAGES_TO_PULL}"
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && metadata+=",beam-job-server-image=${JOB_SERVER_IMAGE}"
 
+  if [[ -n "${GCP_SA_KEY:-}" ]]; then
+    # Encode the service account key (base64 encoding avoids special character issues)
+    encoded_sa_key=$(echo "$GCP_SA_KEY" | base64)
+    metadata+=",gcp_sa_key_base64=${encoded_sa_key}"
+  fi
+
   local image_version=$DATAPROC_VERSION
   echo "Starting dataproc cluster. Dataproc version: $image_version"
 

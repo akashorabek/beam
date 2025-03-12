@@ -66,6 +66,17 @@ function install_docker() {
 }
 
 function configure_gcr() {
+  # Attempt to fetch the service account key (base64 encoded) from instance metadata.
+  # This attribute was passed as metadata by flink_cluster.sh.
+  GCP_SA_KEY_BASE64=$(curl -fsSL -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcp_sa_key_base64" || echo "")
+  if [[ -n "$GCP_SA_KEY_BASE64" ]]; then
+    echo "Found gcp_sa_key_base64 in metadata. Decoding and creating credentials file."
+    echo "$GCP_SA_KEY_BASE64" | base64 --decode > /etc/gcp_sa_key.json
+    export GOOGLE_APPLICATION_CREDENTIALS=/etc/gcp_sa_key.json
+  else
+    echo "No gcp_sa_key_base64 metadata found. Proceeding without it."
+  fi
+
   # this standalone method is recommended here:
   # https://cloud.google.com/container-registry/docs/advanced-authentication#standalone_docker_credential_helper
   curl -fsSL --retry 10 "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${CREDENTIAL_HELPER_VERSION}/docker-credential-gcr_linux_amd64-${CREDENTIAL_HELPER_VERSION}.tar.gz" \
@@ -77,31 +88,15 @@ function configure_gcr() {
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
   # Configure docker to use the credential helper for both registries
-  docker-credential-gcr configure-docker --registries=us.gcr.io
-  su yarn --command "docker-credential-gcr configure-docker --registries=us.gcr.io"
+  docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io
+  su yarn --command "docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io"
 }
 
 function configure_docker() {
   # The installation package should create `docker` group.
   usermod -aG docker yarn
   # configure docker to use Google Cloud Registry
-#  configure_gcr
-
-  # Optional: Verify that the Docker config file exists for root.
-  if [ -f /root/.docker/config.json ]; then
-      echo "Found /root/.docker/config.json:"
-      cat /root/.docker/config.json
-  else
-      echo "WARNING: /root/.docker/config.json not found!"
-  fi
-
-  # And for the yarn user.
-  if [ -f /home/yarn/.docker/config.json ]; then
-      echo "Found /home/yarn/.docker/config.json:"
-      cat /home/yarn/.docker/config.json
-  else
-      echo "WARNING: /home/yarn/.docker/config.json not found!"
-  fi
+  configure_gcr
 
   systemctl enable docker
   # Restart YARN daemons to pick up new group without restarting nodes.

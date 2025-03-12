@@ -77,10 +77,11 @@ env:
   HARNESS_IMAGES_TO_PULL: gcr.io/apache-beam-testing/beam-sdk/beam_go_sdk:latest
   JOB_SERVER_IMAGE: gcr.io/apache-beam-testing/beam_portability/beam_flink1.17_job_server:latest
   ARTIFACTS_DIR: gs://beam-flink-cluster/beam-precommit-flink-container-${{ github.run_id }}
-  DOCKER_REGISTRY: gcr.io
-  DOCKER_REPOSITORY_ROOT: gcr.io/apache-beam-testing/beam-sdk
+  DOCKER_REGISTRY: us.gcr.io
+  DOCKER_REPOSITORY_ROOT: us.gcr.io/apache-beam-testing/github-actions
   PYTHON_VERSION: 3.9
   PYTHON_SDK_IMAGE_TAG: 2.64.0-SNAPSHOT
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
 jobs:
   beam_PreCommit_Flink_Container:
@@ -109,9 +110,9 @@ jobs:
         uses: ./.github/actions/setup-environment-action
         with:
           python-version: default
-#      - name: GCloud Docker credential helper
-#        run: |
-#          gcloud auth configure-docker ${{ env.DOCKER_REGISTRY }}
+      - name: GCloud Docker credential helper
+        run: |
+          gcloud auth configure-docker ${{ env.DOCKER_REGISTRY }}
 #      - name: Set PYTHON_SDK_IMAGE_TAG unique variable based on timestamp
 #        if: ${{ github.event_name == 'pull_request_target' }}
 #        run: echo "PYTHON_SDK_IMAGE_TAG=$(date +'%Y%m%d-%H%M%S%N')" >> $GITHUB_ENV
