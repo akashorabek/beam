@@ -30,7 +30,7 @@ readonly OS_ID=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
 readonly OS_CODE=$(lsb_release -cs)
 # TODO: Allow this to be configured by metadata.
 readonly DOCKER_VERSION="18.06.0~ce~3-0~${OS_ID}"
-readonly CREDENTIAL_HELPER_VERSION='2.0.2'
+readonly CREDENTIAL_HELPER_VERSION='2.1.26'
 
 
 function is_master() {
@@ -76,14 +76,11 @@ function configure_gcr() {
   # the root user, as well as the yarn user which is part of the docker group.
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
-  docker-credential-gcr configure-docker --registries="gcr.io,us.gcr.io"
-  su yarn --command "docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io"
+  docker-credential-gcr configure-docker --registries="us.gcr.io"
+  su yarn --command "docker-credential-gcr configure-docker --registries=us.gcr.io"
+  echo "Fetching credentials for https://gcr.io:"
   echo "https://gcr.io" | docker-credential-gcr get
-  echo "https://us.gcr.io" | docker-credential-gcr get
-  # Configure docker for us.gcr.io as well.
-  gcloud auth configure-docker us.gcr.io
-  su yarn --command "gcloud auth configure-docker us.gcr.io"
-  echo "https://gcr.io" | docker-credential-gcr get
+  echo "Fetching credentials for https://us.gcr.io:"
   echo "https://us.gcr.io" | docker-credential-gcr get
 }
 
