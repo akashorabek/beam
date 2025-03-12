@@ -77,7 +77,14 @@ function configure_gcr() {
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
   docker-credential-gcr configure-docker --registries="gcr.io,us.gcr.io"
-  su yarn --command "docker-credential-gcr configure-docker"
+  su yarn --command "docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io"
+  echo "https://gcr.io" | docker-credential-gcr get
+  echo "https://us.gcr.io" | docker-credential-gcr get
+  # Configure docker for us.gcr.io as well.
+  gcloud auth configure-docker us.gcr.io
+  su yarn --command "gcloud auth configure-docker us.gcr.io"
+  echo "https://gcr.io" | docker-credential-gcr get
+  echo "https://us.gcr.io" | docker-credential-gcr get
 }
 
 function configure_docker() {
