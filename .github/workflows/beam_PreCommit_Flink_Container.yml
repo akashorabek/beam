@@ -109,9 +109,9 @@ jobs:
         uses: ./.github/actions/setup-environment-action
         with:
           python-version: default
-      - name: GCloud Docker credential helper
-        run: |
-          gcloud auth configure-docker ${{ env.DOCKER_REGISTRY }}
+#      - name: GCloud Docker credential helper
+#        run: |
+#          gcloud auth configure-docker ${{ env.DOCKER_REGISTRY }}
 #      - name: Set PYTHON_SDK_IMAGE_TAG unique variable based on timestamp
 #        if: ${{ github.event_name == 'pull_request_target' }}
 #        run: echo "PYTHON_SDK_IMAGE_TAG=$(date +'%Y%m%d-%H%M%S%N')" >> $GITHUB_ENV
