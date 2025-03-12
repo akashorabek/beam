@@ -170,6 +170,14 @@ function create() {
     echo "Configuring worker: $node"
     gcloud compute ssh --zone=$GCLOUD_ZONE --quiet yarn@$node --command="gcloud auth configure-docker us.gcr.io"
   done
+
+  # Show the root user's Docker config
+  echo "Root Docker config:"
+  cat /root/.docker/config.json
+
+  # Show the yarn user's Docker config
+  echo "Yarn Docker config:"
+  su yarn --command "cat ~/.docker/config.json"
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
 }

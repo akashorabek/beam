@@ -79,9 +79,16 @@ function configure_gcr() {
   docker-credential-gcr configure-docker
   su yarn --command "docker-credential-gcr configure-docker"
 
-  # Configure docker to authenticate for us.gcr.io as well.
   gcloud auth configure-docker us.gcr.io
   su yarn --command "gcloud auth configure-docker us.gcr.io"
+
+  # Show the root user's Docker config
+  echo "Root Docker config:"
+  cat /root/.docker/config.json
+
+  # Show the yarn user's Docker config
+  echo "Yarn Docker config:"
+  su yarn --command "cat ~/.docker/config.json"
 }
 
 function configure_docker() {
