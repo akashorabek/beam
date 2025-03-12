@@ -80,7 +80,7 @@ env:
   DOCKER_REGISTRY: us.gcr.io
   DOCKER_REPOSITORY_ROOT: us.gcr.io/apache-beam-testing/github-actions
   PYTHON_VERSION: 3.9
-  PYTHON_SDK_IMAGE_TAG: 20250312-110225076751631
+  PYTHON_SDK_IMAGE_TAG: 20250312-110225076751632
 
 jobs:
   beam_PreCommit_Flink_Container:

@@ -87,6 +87,28 @@ function configure_docker() {
   # configure docker to use Google Cloud Registry
   configure_gcr
 
+  echo "Running gcloud auth configure-docker us.gcr.io for root..."
+  gcloud auth configure-docker us.gcr.io
+
+  echo "Running gcloud auth configure-docker us.gcr.io for yarn..."
+  sudo -u yarn gcloud auth configure-docker us.gcr.io
+
+  # Optional: Verify that the Docker config file exists for root.
+  if [ -f /root/.docker/config.json ]; then
+      echo "Found /root/.docker/config.json:"
+      cat /root/.docker/config.json
+  else
+      echo "WARNING: /root/.docker/config.json not found!"
+  fi
+
+  # And for the yarn user.
+  if [ -f /home/yarn/.docker/config.json ]; then
+      echo "Found /home/yarn/.docker/config.json:"
+      cat /home/yarn/.docker/config.json
+  else
+      echo "WARNING: /home/yarn/.docker/config.json not found!"
+  fi
+
   systemctl enable docker
   # Restart YARN daemons to pick up new group without restarting nodes.
   if is_master ; then
