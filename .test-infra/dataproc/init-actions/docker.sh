@@ -85,7 +85,7 @@ function configure_docker() {
   # The installation package should create `docker` group.
   usermod -aG docker yarn
   # configure docker to use Google Cloud Registry
-  configure_gcr
+#  configure_gcr
 
   # Optional: Verify that the Docker config file exists for root.
   if [ -f /root/.docker/config.json ]; then
