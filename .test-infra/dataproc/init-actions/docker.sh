@@ -76,8 +76,12 @@ function configure_gcr() {
   # the root user, as well as the yarn user which is part of the docker group.
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
+  docker-credential-gcr gcr-login
+  su yarn --command "docker-credential-gcr gcr-login"
+  docker-credential-gcr config --token-source="store"
+  su yarn --command "docker-credential-gcr config --token-source=\"store\""
   docker-credential-gcr configure-docker --registries="us.gcr.io"
-  su yarn --command "docker-credential-gcr configure-docker --registries=us.gcr.io"
+  su yarn --command "docker-credential-gcr configure-docker --registries=\"us.gcr.io\""
   echo "Fetching credentials for https://gcr.io:"
   echo "https://gcr.io" | docker-credential-gcr get
   echo "Fetching credentials for https://us.gcr.io:"
