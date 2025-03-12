@@ -30,7 +30,7 @@ readonly OS_ID=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
 readonly OS_CODE=$(lsb_release -cs)
 # TODO: Allow this to be configured by metadata.
 readonly DOCKER_VERSION="18.06.0~ce~3-0~${OS_ID}"
-readonly CREDENTIAL_HELPER_VERSION='2.0.2'
+readonly CREDENTIAL_HELPER_VERSION='2.1.26'
 
 
 function is_master() {
