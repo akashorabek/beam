@@ -76,19 +76,8 @@ function configure_gcr() {
   # the root user, as well as the yarn user which is part of the docker group.
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
-  docker-credential-gcr configure-docker
+  docker-credential-gcr configure-docker --registries="gcr.io,us.gcr.io"
   su yarn --command "docker-credential-gcr configure-docker"
-
-  gcloud auth configure-docker us.gcr.io
-  su yarn --command "gcloud auth configure-docker us.gcr.io"
-
-  # Show the root user's Docker config
-  echo "Root Docker config:"
-  cat /root/.docker/config.json
-
-  # Show the yarn user's Docker config
-  echo "Yarn Docker config:"
-  su yarn --command "cat ~/.docker/config.json"
 }
 
 function configure_docker() {

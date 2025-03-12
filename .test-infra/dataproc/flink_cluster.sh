@@ -157,27 +157,6 @@ function create() {
   upload_init_actions
   create_cluster
   get_leader
-  gcloud compute ssh --zone=$GCLOUD_ZONE --quiet yarn@$MASTER_NAME --command="gcloud auth configure-docker us.gcr.io"
-  # Get the list of worker nodes in the cluster
-  WORKER_NODES=$(gcloud compute instances list \
-    --filter="name~'^${CLUSTER_NAME}-w'" \
-    --zones=$GCLOUD_ZONE \
-    --format="value(name)")
-
-  echo "Configuring Docker credentials on worker nodes: $WORKER_NODES"
-
-  for node in $WORKER_NODES; do
-    echo "Configuring worker: $node"
-    gcloud compute ssh --zone=$GCLOUD_ZONE --quiet yarn@$node --command="gcloud auth configure-docker us.gcr.io"
-  done
-
-  # Show the root user's Docker config
-  echo "Root Docker config:"
-  cat /root/.docker/config.json
-
-  # Show the yarn user's Docker config
-  echo "Yarn Docker config:"
-  su yarn --command "cat ~/.docker/config.json"
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
 }
