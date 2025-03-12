@@ -192,19 +192,19 @@ public final class BigQueryIOST extends IOStressTestBase {
     runTest();
   }
 
-//  @Test
-//  public void testAvroStorageAPIAtLeastOnce() throws IOException {
-//    configuration.writeFormat = WriteFormat.AVRO.name();
-//    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
-//    runTest();
-//  }
-//
-//  @Test
-//  public void testJsonStorageAPIAtLeastOnce() throws IOException {
-//    configuration.writeFormat = WriteFormat.JSON.name();
-//    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
-//    runTest();
-//  }
+  @Test
+  public void testAvroStorageAPIAtLeastOnce() throws IOException {
+    configuration.writeFormat = WriteFormat.AVRO.name();
+    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
+    runTest();
+  }
+
+  @Test
+  public void testJsonStorageAPIAtLeastOnce() throws IOException {
+    configuration.writeFormat = WriteFormat.JSON.name();
+    configuration.writeMethod = STORAGE_API_AT_LEAST_ONCE_METHOD;
+    runTest();
+  }
 
   /**
    * Runs a stress test for BigQueryIO based on the specified configuration parameters. The method
