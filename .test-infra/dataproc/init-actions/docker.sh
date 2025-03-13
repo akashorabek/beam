@@ -83,8 +83,8 @@ function configure_gcr() {
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
   # Configure docker to use the credential helper for both registries
-  docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io
-  su yarn --command "docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io"
+  docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io --include-artifact-registry
+  su yarn --command "docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io --include-artifact-registry"
 }
 
 function configure_docker() {
