@@ -68,14 +68,9 @@ function install_docker() {
 function configure_gcr() {
   # Attempt to fetch the service account key (base64 encoded) from instance metadata.
   # This attribute was passed as metadata by flink_cluster.sh.
-  GCP_SA_KEY_BASE64=$(curl -fsSL -H "Metadata-Flavor: Google" "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gcp_sa_key_base64" || echo "")
-  if [[ -n "$GCP_SA_KEY_BASE64" ]]; then
-    echo "Found gcp_sa_key_base64 in metadata. Decoding and creating credentials file."
-    echo "$GCP_SA_KEY_BASE64" | base64 --decode > /etc/gcp_sa_key.json
-    export GOOGLE_APPLICATION_CREDENTIALS=/etc/gcp_sa_key.json
-  else
-    echo "No gcp_sa_key_base64 metadata found. Proceeding without it."
-  fi
+  GCP_SA_KEY_BASE64="$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64)"
+  echo "$GCP_SA_KEY_BASE64" | base64 --decode > /etc/gcp_sa_key.json
+  export GOOGLE_APPLICATION_CREDENTIALS=/etc/gcp_sa_key.json
 
   # this standalone method is recommended here:
   # https://cloud.google.com/container-registry/docs/advanced-authentication#standalone_docker_credential_helper
