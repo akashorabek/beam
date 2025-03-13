@@ -83,8 +83,16 @@ function configure_gcr() {
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
   # Configure docker to use the credential helper for both registries
-  docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io --include-artifact-registry
-  su yarn --command "docker-credential-gcr configure-docker --registries=gcr.io,us.gcr.io --include-artifact-registry"
+  docker-credential-gcr configure-docker
+  su yarn --command "docker-credential-gcr configure-docker"
+
+  docker-credential-gcr gcr-login
+  su yarn --command "docker-credential-gcr gcr-login"
+
+  echo "Pulling the SDK image from us.gcr.io..."
+  docker pull us.gcr.io/apache-beam-testing/github-actions/beam_python3.9_sdk:2.64.0-SNAPSHOT
+  echo "Pulling the SDK image as yarn..."
+  su yarn --command "docker pull us.gcr.io/apache-beam-testing/github-actions/beam_python3.9_sdk:2.64.0-SNAPSHOT"
 }
 
 function configure_docker() {
