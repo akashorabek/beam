@@ -165,6 +165,8 @@ function create() {
   get_leader
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
+  echo "Checking docker credentials on the master node..."
+      gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "echo 'https://us.gcr.io' | docker-credential-gcr get"
 }
 
 # Recreates a Flink cluster.
