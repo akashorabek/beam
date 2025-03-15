@@ -181,6 +181,8 @@ function create() {
   echo "Configuring Docker credentials on the master node as yarn..."
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "gcloud auth configure-docker us.gcr.io --quiet"
 
+  echo "Home is this"
+  echo $HOME
   echo "Checking the config for root"
   sudo cat /home/github-actions/.docker/config.json
   echo "Checking the config for yarn"
