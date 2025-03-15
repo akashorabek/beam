@@ -173,6 +173,20 @@ function create() {
     gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$worker_name" --command "gcloud auth configure-docker us.gcr.io --quiet"
     echo "Running gcloud auth configure-docker us.gcr.io on worker $worker_name as yarn..."
     gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$worker_name" --command "gcloud auth configure-docker us.gcr.io --quiet"
+    echo "Checking the config for root worker $worker_name"
+    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$worker_name" --command "sudo cat /home/github-actions/.docker/config.json"
+    echo "Checking the config for yarn worker $worker_name"
+    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$worker_name" --command "cat /var/lib/hadoop-yarn/.docker/config.json"
+
+    echo "Active account $worker_name as root..."
+    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$worker_name" --command "gcloud info --format=\"value(config.account)\""
+    echo "Active account $worker_name as yarn..."
+    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$worker_name" --command "gcloud info --format=\"value(config.account)\""
+
+    echo "Token $worker_name as root..."
+    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$worker_name" --command "gcloud auth print-access-token"
+    echo "Token $worker_name as yarn..."
+    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$worker_name" --command "gcloud auth print-access-token"
   done
 
   # --- NEW SECTION: Update the master node ---
@@ -181,12 +195,20 @@ function create() {
   echo "Configuring Docker credentials on the master node as yarn..."
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "gcloud auth configure-docker us.gcr.io --quiet"
 
-  echo "Home is this"
-  echo $HOME
-  echo "Checking the config for root"
+  echo "Checking the config for root master"
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$MASTER_NAME" --command "sudo cat /home/github-actions/.docker/config.json"
-  echo "Checking the config for yarn"
+  echo "Checking the config for yarn master"
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "cat /var/lib/hadoop-yarn/.docker/config.json"
+
+  echo "Active account $MASTER_NAME as root..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$MASTER_NAME" --command "gcloud info --format=\"value(config.account)\""
+  echo "Active account $MASTER_NAME as yarn..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "gcloud info --format=\"value(config.account)\""
+
+  echo "Token $MASTER_NAME as root..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$MASTER_NAME" --command "gcloud auth print-access-token"
+  echo "Token $MASTER_NAME as yarn..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "gcloud auth print-access-token"
 }
 
 # Recreates a Flink cluster.
