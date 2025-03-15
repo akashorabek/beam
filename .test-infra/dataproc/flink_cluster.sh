@@ -170,15 +170,21 @@ function create() {
   for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
     worker_name="$CLUSTER_NAME-w-$i"
     echo "Running gcloud auth configure-docker us.gcr.io on worker $worker_name as root..."
-    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$worker_name" --command "gcloud auth configure-docker us.gcr.io"
+    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$worker_name" --command "gcloud auth configure-docker us.gcr.io --quiet"
     echo "Running gcloud auth configure-docker us.gcr.io on worker $worker_name as yarn..."
-    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$worker_name" --command "gcloud auth configure-docker us.gcr.io"
+    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$worker_name" --command "gcloud auth configure-docker us.gcr.io --quiet"
   done
 
+  # --- NEW SECTION: Update the master node ---
+  echo "Configuring Docker credentials on the master node as root..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$MASTER_NAME" --command "gcloud auth configure-docker us.gcr.io --quiet"
+  echo "Configuring Docker credentials on the master node as yarn..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "gcloud auth configure-docker us.gcr.io --quiet"
+
   echo "Checking the config for root"
-  sudo cat /root/.docker/config.json
+  sudo cat /home/github-actions/.docker/config.json
   echo "Checking the config for yarn"
-  su yarn --command "cat ~/.docker/config.json"
+  su yarn --command "cat /var/lib/hadoop-yarn/.docker/config.json"
 }
 
 # Recreates a Flink cluster.
