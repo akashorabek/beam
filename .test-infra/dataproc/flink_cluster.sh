@@ -184,9 +184,9 @@ function create() {
   echo "Home is this"
   echo $HOME
   echo "Checking the config for root"
-  sudo cat /home/github-actions/.docker/config.json
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$MASTER_NAME" --command "sudo cat /home/github-actions/.docker/config.json"
   echo "Checking the config for yarn"
-  su yarn --command "cat /var/lib/hadoop-yarn/.docker/config.json"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "cat /var/lib/hadoop-yarn/.docker/config.json"
 }
 
 # Recreates a Flink cluster.
