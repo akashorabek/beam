@@ -69,25 +69,24 @@ function configure_gcr() {
   # Attempt to fetch the service account key (base64 encoded) from instance metadata.
   # This attribute was passed as metadata by flink_cluster.sh.
   GCP_SA_KEY_BASE64="$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64)"
-  echo "$GCP_SA_KEY_BASE64" | base64 --decode > /etc/gcp_sa_key.json
-  export GOOGLE_APPLICATION_CREDENTIALS=/etc/gcp_sa_key.json
+  echo "$GCP_SA_KEY_BASE64" | docker login -u _json_key_base64 --password-stdin https://us.gcr.io
 
   # this standalone method is recommended here:
   # https://cloud.google.com/container-registry/docs/advanced-authentication#standalone_docker_credential_helper
-  curl -fsSL --retry 10 "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${CREDENTIAL_HELPER_VERSION}/docker-credential-gcr_linux_amd64-${CREDENTIAL_HELPER_VERSION}.tar.gz" \
-    | tar xz --to-stdout ./docker-credential-gcr \
-    > /usr/local/bin/docker-credential-gcr && chmod +x /usr/local/bin/docker-credential-gcr
+#  curl -fsSL --retry 10 "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${CREDENTIAL_HELPER_VERSION}/docker-credential-gcr_linux_amd64-${CREDENTIAL_HELPER_VERSION}.tar.gz" \
+#    | tar xz --to-stdout ./docker-credential-gcr \
+#    > /usr/local/bin/docker-credential-gcr && chmod +x /usr/local/bin/docker-credential-gcr
 
   # this command configures docker on a per-user basis. Therefore we configure
   # the root user, as well as the yarn user which is part of the docker group.
   # If additional users are added to the docker group later, this command will
   # need to be run for them as well.
   # Configure docker to use the credential helper for both registries
-  docker-credential-gcr configure-docker
-  su yarn --command "docker-credential-gcr configure-docker"
-
-  docker-credential-gcr gcr-login
-  su yarn --command "docker-credential-gcr gcr-login"
+#  docker-credential-gcr configure-docker
+#  su yarn --command "docker-credential-gcr configure-docker"
+#
+#  docker-credential-gcr gcr-login
+#  su yarn --command "docker-credential-gcr gcr-login"
 
   echo "Pulling the SDK image from us.gcr.io..."
   docker pull us.gcr.io/apache-beam-testing/github-actions/beam_python3.9_sdk:2.64.0-SNAPSHOT
