@@ -153,7 +153,7 @@ function create_cluster() {
     # Dataproc 2.1 uses n2-standard-2 by default but there is N2 CPUs=24 quota limit for this project
     gcloud dataproc clusters create $CLUSTER_NAME --enable-component-gateway --region=$GCLOUD_REGION --num-workers=$FLINK_NUM_WORKERS --public-ip-address \
     --master-machine-type=${master_machine_type} --worker-machine-type=${worker_machine_type} --metadata "${metadata}", \
-    --image-version=$image_version --zone=$GCLOUD_ZONE --optional-components=FLINK,DOCKER  --quiet
+    --image-version=$image_version --zone=$GCLOUD_ZONE --optional-components=FLINK,DOCKER --initialization-actions gs://beam-flink-cluster/init-actions/docker.sh --quiet
   fi
 }
 
