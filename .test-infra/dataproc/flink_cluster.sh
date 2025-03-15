@@ -158,6 +158,22 @@ function create_cluster() {
   fi
 }
 
+# Helper function to activate the service account on a given node as root
+function activate_sa_on_node_as_root() {
+  local node="$1"
+  echo "Activating service account on node $node as root..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo -E sh -c 'GCP_SA_KEY_BASE64=\$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64); echo \"\$GCP_SA_KEY_BASE64\" | base64 --decode > /etc/gcp_sa_key.json'"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo gcloud auth activate-service-account --key-file=/etc/gcp_sa_key.json --quiet"
+}
+
+# Helper function to activate the service account on a given node as yarn
+function activate_sa_on_node_as_yarn() {
+  local node="$1"
+  echo "Activating service account on node $node as yarn..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "sudo -E sh -c 'GCP_SA_KEY_BASE64=\$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64); echo \"\$GCP_SA_KEY_BASE64\" | base64 --decode > /etc/gcp_sa_key.json'"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "sudo gcloud auth activate-service-account --key-file=/etc/gcp_sa_key.json --quiet"
+}
+
 # Runs init actions for Docker, Portability framework (Beam) and Flink cluster
 # and opens an SSH tunnel to connect with Flink easily and run Beam jobs.
 function create() {
@@ -171,10 +187,16 @@ function create() {
     worker_name="$CLUSTER_NAME-w-$i"
     gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$worker_name" --command "gcloud auth configure-docker us.gcr.io --quiet"
     gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$worker_name" --command "gcloud auth configure-docker us.gcr.io --quiet"
+#    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$worker_name" --command "gcloud auth print-access-token | sudo docker login -u oauth2accesstoken --password-stdin https://us.gcr.io"
+#    gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$worker_name" --command "gcloud auth print-access-token | sudo docker login -u oauth2accesstoken --password-stdin https://us.gcr.io"
+    activate_sa_on_node_as_root "$worker_name"
+    activate_sa_on_node_as_yarn "$worker_name"
   done
 
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$MASTER_NAME" --command "gcloud auth configure-docker us.gcr.io --quiet"
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$MASTER_NAME" --command "gcloud auth configure-docker us.gcr.io --quiet"
+  activate_sa_on_node_as_root "$MASTER_NAME"
+  activate_sa_on_node_as_yarn "$MASTER_NAME"
 }
 
 # Recreates a Flink cluster.
