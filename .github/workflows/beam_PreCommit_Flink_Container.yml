@@ -177,10 +177,10 @@ jobs:
 #            -Prunner=:runners:flink:1.17 \
 #            '-PloadTest.args=${{ env.beam_PreCommit_Flink_Container_test_arguments_3 }} --jobName=flink-tests-java11-${{env.NOW_UTC}}'
 
-      - name: Teardown Flink
-        if: always()
-        run: |
-          ${{ github.workspace }}/.test-infra/dataproc/flink_cluster.sh delete
+#      - name: Teardown Flink
+#        if: always()
+#        run: |
+#          ${{ github.workspace }}/.test-infra/dataproc/flink_cluster.sh delete
 
 #      - name: Cleanup Python SDK Container
 #        if: ${{ always() && github.event_name == 'pull_request_target' }}
