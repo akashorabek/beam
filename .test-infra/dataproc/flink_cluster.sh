@@ -166,8 +166,8 @@ function update_docker_config_on_node() {
       sudo chmod a+r /etc/docker/config.json
 
       # Create a system-wide file to export DOCKER_CONFIG for users
-      echo "export DOCKER_CONFIG=/etc/docker" | sudo tee /etc/profile.d/docker_config.sh > /dev/null
-
+      echo "DOCKER_CONFIG=/etc/docker" | sudo tee -a /etc/environment > /dev/null
+      export DOCKER_CONFIG=/etc/docker
       echo "Docker config updated on '"$node"'"
     '
 }
