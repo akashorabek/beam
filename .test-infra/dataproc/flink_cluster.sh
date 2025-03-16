@@ -161,48 +161,54 @@ function update_docker_config_on_node() {
   local node="$1"
   echo "Updating Docker configuration on node $node as root..."
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command $'
+      sudo gcloud auth configure-docker us.gcr.io
       # Copy the Docker config file to a shared location and adjust permissions
       sudo cp /root/.docker/config.json /etc/docker/config.json
       sudo chmod a+r /etc/docker/config.json
 
       # Create a system-wide file to export DOCKER_CONFIG for users
       echo "DOCKER_CONFIG=/etc/docker" | sudo tee -a /etc/environment > /dev/null
-      export DOCKER_CONFIG=/etc/docker
+      sudo export DOCKER_CONFIG=/etc/docker
+
       echo "Docker config updated on '"$node"'"
     '
 }
 
 ## Helper function to activate the service account on a given node as root
-#function activate_sa_on_node_as_root() {
-#  local node="$1"
-#  echo "Activating service account on node $node as root..."
-#  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo -E sh -c 'GCP_SA_KEY_BASE64=\$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64); echo \"\$GCP_SA_KEY_BASE64\" | base64 --decode > /etc/gcp_sa_key.json'"
-#  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo gcloud auth activate-service-account --key-file=/etc/gcp_sa_key.json --quiet"
-#}
-#
-## Helper function to activate the service account on a given node as yarn
-#function activate_sa_on_node_as_yarn() {
-#  local node="$1"
-#  echo "Activating service account on node $node as yarn..."
-#  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "sudo -E sh -c 'GCP_SA_KEY_BASE64=\$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64); echo \"\$GCP_SA_KEY_BASE64\" | base64 --decode > /etc/gcp_sa_key.json'"
-#  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "sudo gcloud auth activate-service-account --key-file=/etc/gcp_sa_key.json --quiet"
-#}
+function activate_sa_on_node_as_root() {
+  local node="$1"
+  echo "Activating service account on node $node as root..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo -E sh -c 'GCP_SA_KEY_BASE64=\$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64); echo \"\$GCP_SA_KEY_BASE64\" | base64 --decode > /etc/gcp_sa_key.json'"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo gcloud auth activate-service-account --key-file=/etc/gcp_sa_key.json --quiet"
+}
+
+# Helper function to activate the service account on a given node as yarn
+function activate_sa_on_node_as_yarn() {
+  local node="$1"
+  echo "Activating service account on node $node as yarn..."
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "sudo -E sh -c 'GCP_SA_KEY_BASE64=\$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64); echo \"\$GCP_SA_KEY_BASE64\" | base64 --decode > /etc/gcp_sa_key.json'"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "sudo gcloud auth activate-service-account --key-file=/etc/gcp_sa_key.json --quiet"
+}
 
 # Runs init actions for Docker, Portability framework (Beam) and Flink cluster
 # and opens an SSH tunnel to connect with Flink easily and run Beam jobs.
 function create() {
   upload_init_actions
   create_cluster
+  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
+      worker_name="$CLUSTER_NAME-w-$i"
+      activate_sa_on_node_as_root "$worker_name"
+      activate_sa_on_node_as_yarn "$worker_name"
+      update_docker_config_on_node "$worker_name"
+    done
+
+    activate_sa_on_node_as_root "$MASTER_NAME"
+    activate_sa_on_node_as_yarn "$MASTER_NAME"
+    update_docker_config_on_node "$MASTER_NAME"
   get_leader
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
   echo "Configuring Docker credentials on all worker nodes..."
-  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
-    worker_name="$CLUSTER_NAME-w-$i"
-    update_docker_config_on_node "$worker_name"
-  done
-
-  update_docker_config_on_node "$MASTER_NAME"
 }
 
 # Recreates a Flink cluster.
