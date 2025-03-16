@@ -160,7 +160,16 @@ function create_cluster() {
 function update_docker_config_on_node() {
   local node="$1"
   echo "Updating Docker configuration on node $node as root..."
-  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo cp /root/.docker/config.json /etc/docker/config.json && sudo chmod a+r /etc/docker/config.json && export DOCKER_CONFIG=/etc/docker && echo 'Docker config updated on $node'"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command $'
+      # Copy the Docker config file to a shared location and adjust permissions
+      sudo cp /root/.docker/config.json /etc/docker/config.json
+      sudo chmod a+r /etc/docker/config.json
+
+      # Create a system-wide file to export DOCKER_CONFIG for users
+      echo "export DOCKER_CONFIG=/etc/docker" | sudo tee /etc/profile.d/docker_config.sh > /dev/null
+
+      echo "Docker config updated on '"$node"'"
+    '
 }
 
 ## Helper function to activate the service account on a given node as root
