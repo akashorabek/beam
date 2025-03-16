@@ -82,7 +82,6 @@ env:
   PYTHON_VERSION: 3.9
   PYTHON_SDK_IMAGE_TAG: 2.64.0-SNAPSHOT
   GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-  DOCKER_CONFIG: /etc/docker
   USER: github-actions
 
 jobs:
@@ -94,8 +93,6 @@ jobs:
       github.event_name == 'pull_request_target' ||
       github.event.comment.body == 'Run Flink Container PreCommit'
     runs-on: [self-hosted, ubuntu-20.04, main]
-    env:
-      DOCKER_CONFIG: /etc/docker
     timeout-minutes: 90
     name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
     strategy:
@@ -145,6 +142,7 @@ jobs:
       - name: Start Flink with 2 workers
         env:
           FLINK_NUM_WORKERS: 2
+          DOCKER_CONFIG: /etc/docker
         run: |
           cd ${{ github.workspace }}/.test-infra/dataproc; ./flink_cluster.sh create
       # Run a simple Go Combine load test to verify the Flink container
@@ -161,6 +159,8 @@ jobs:
       # Run a Python Combine load test to verify the Flink container
       - name: Run Flink Container Test with Python Combine
         timeout-minutes: 20
+        env:
+          DOCKER_CONFIG: /etc/docker
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
           gradle-command: :sdks:python:apache_beam:testing:load_tests:run
