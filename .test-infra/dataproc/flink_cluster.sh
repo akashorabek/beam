@@ -126,11 +126,11 @@ function create_cluster() {
   [[ -n "${HARNESS_IMAGES_TO_PULL:=}" ]] && metadata+=",beam-sdk-harness-images-to-pull=${HARNESS_IMAGES_TO_PULL}"
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && metadata+=",beam-job-server-image=${JOB_SERVER_IMAGE}"
 
-  if [[ -n "${GCP_SA_KEY:-}" ]]; then
-    # Encode the service account key (base64 encoding avoids special character issues)
-    encoded_sa_key=$(echo "$GCP_SA_KEY" | base64)
-    metadata+=",gcp_sa_key_base64=${encoded_sa_key}"
-  fi
+#  if [[ -n "${GCP_SA_KEY:-}" ]]; then
+#    # Encode the service account key (base64 encoding avoids special character issues)
+#    encoded_sa_key=$(echo "$GCP_SA_KEY" | base64)
+#    metadata+=",gcp_sa_key_base64=${encoded_sa_key}"
+#  fi
 
   local image_version=$DATAPROC_VERSION
   echo "Starting dataproc cluster. Dataproc version: $image_version"
@@ -195,16 +195,16 @@ function activate_sa_on_node_as_yarn() {
 function create() {
   upload_init_actions
   create_cluster
-#  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
-#      worker_name="$CLUSTER_NAME-w-$i"
+  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
+      worker_name="$CLUSTER_NAME-w-$i"
 #      activate_sa_on_node_as_root "$worker_name"
 #      activate_sa_on_node_as_yarn "$worker_name"
-#      update_docker_config_on_node "$worker_name"
-#    done
-#
+      update_docker_config_on_node "$worker_name"
+    done
+
 #    activate_sa_on_node_as_root "$MASTER_NAME"
 #    activate_sa_on_node_as_yarn "$MASTER_NAME"
-#    update_docker_config_on_node "$MASTER_NAME"
+    update_docker_config_on_node "$MASTER_NAME"
   get_leader
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
