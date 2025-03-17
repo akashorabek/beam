@@ -161,16 +161,25 @@ function update_docker_config_on_node() {
   local node="$1"
   echo "Updating Docker configuration on node $node as root..."
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command $'
-      sudo -u runner gcloud auth configure-docker us.gcr.io --quiet
-      sudo -u github-actions gcloud auth configure-docker us.gcr.io --quiet
-      sudo -u Akarys gcloud auth configure-docker us.gcr.io --quiet
-      sudo -u d gcloud auth configure-docker us.gcr.io --quiet
-      sudo -u jasonkuster gcloud auth configure-docker us.gcr.io --quiet
-      sudo -u gke-69b374ab544ae34db2bb gcloud auth configure-docker us.gcr.io --quiet
-      sudo -u gke-5f9b041edfae58a30477 gcloud auth configure-docker us.gcr.io --quiet
-      sudo -u yarn gcloud auth configure-docker us.gcr.io --quiet
-      echo "Docker config updated on '"$node"'"
+      echo "Starting gcloud auth configure-docker for all users..."
+
+      # Loop through each user from /etc/passwd
+      while IFS=: read -r username _; do
+        echo "Processing user: $username"
+        # Attempt to run the command as the user.
+        # If it fails (e.g. due to no home directory, no gcloud, or insufficient permissions),
+        # it will print a message and continue.
+        if sudo -u "$username" gcloud auth configure-docker us.gcr.io --quiet; then
+          echo "Success for $username"
+        else
+          echo "Failed for $username (or not applicable)"
+        fi
+      done < /etc/passwd
+
+      echo "Done.""
     '
+
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "sudo gcloud auth configure-docker us.gcr.io --quiet"
 }
 
 ## Helper function to activate the service account on a given node as root

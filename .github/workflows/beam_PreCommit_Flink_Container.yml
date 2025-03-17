@@ -129,6 +129,8 @@ jobs:
 #            -Ppush-containers
       - name: Prepare test arguments
         uses: ./.github/actions/test-arguments-action
+        env:
+          USER: someUser
         with:
           test-type: precommit
           test-language: go,python,java
