@@ -161,14 +161,17 @@ function update_docker_config_on_node() {
   local node="$1"
   echo "Updating Docker configuration on node $node as root..."
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command $'
-      sudo gcloud auth configure-docker us.gcr.io
-      # Copy the Docker config file to a shared location and adjust permissions
+      # Configure Docker to use gcloud for authentication with us.gcr.io
+      sudo gcloud auth configure-docker us.gcr.io --quiet
+
+      # Copy the Docker config file from root’s home to a shared location and adjust permissions
       sudo cp /root/.docker/config.json /etc/docker/config.json
       sudo chmod a+r /etc/docker/config.json
 
-      # Create a system-wide file to export DOCKER_CONFIG for users
-      echo "DOCKER_CONFIG=/etc/docker" | sudo tee -a /etc/environment > /dev/null
-      sudo export DOCKER_CONFIG=/etc/docker
+      # Ensure /etc/skel/.docker exists so that new users get this configuration by default
+      sudo mkdir -p /etc/skel/.docker
+      sudo cp /etc/docker/config.json /etc/skel/.docker/config.json
+      sudo chmod 644 /etc/skel/.docker/config.json
 
       echo "Docker config updated on '"$node"'"
     '

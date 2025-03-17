@@ -82,7 +82,6 @@ env:
   PYTHON_VERSION: 3.9
   PYTHON_SDK_IMAGE_TAG: 2.64.0-SNAPSHOT
   GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-  USER: github-actions-user
 
 jobs:
   beam_PreCommit_Flink_Container:
@@ -142,8 +141,6 @@ jobs:
       - name: Start Flink with 2 workers
         env:
           FLINK_NUM_WORKERS: 2
-          DOCKER_CONFIG: /etc/docker
-          USER: github-actions-user-create-dataproc
         run: |
           cd ${{ github.workspace }}/.test-infra/dataproc; ./flink_cluster.sh create
       # Run a simple Go Combine load test to verify the Flink container
