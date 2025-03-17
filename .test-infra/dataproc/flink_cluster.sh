@@ -195,16 +195,16 @@ function activate_sa_on_node_as_yarn() {
 function create() {
   upload_init_actions
   create_cluster
-  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
-      worker_name="$CLUSTER_NAME-w-$i"
-      activate_sa_on_node_as_root "$worker_name"
-      activate_sa_on_node_as_yarn "$worker_name"
-      update_docker_config_on_node "$worker_name"
-    done
-
-    activate_sa_on_node_as_root "$MASTER_NAME"
-    activate_sa_on_node_as_yarn "$MASTER_NAME"
-    update_docker_config_on_node "$MASTER_NAME"
+#  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
+#      worker_name="$CLUSTER_NAME-w-$i"
+#      activate_sa_on_node_as_root "$worker_name"
+#      activate_sa_on_node_as_yarn "$worker_name"
+#      update_docker_config_on_node "$worker_name"
+#    done
+#
+#    activate_sa_on_node_as_root "$MASTER_NAME"
+#    activate_sa_on_node_as_yarn "$MASTER_NAME"
+#    update_docker_config_on_node "$MASTER_NAME"
   get_leader
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
