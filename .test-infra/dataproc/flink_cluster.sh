@@ -161,18 +161,14 @@ function update_docker_config_on_node() {
   local node="$1"
   echo "Updating Docker configuration on node $node as root..."
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command $'
-      # Configure Docker to use gcloud for authentication with us.gcr.io
-      sudo gcloud auth configure-docker us.gcr.io --quiet
-
-      # Copy the Docker config file from root’s home to a shared location and adjust permissions
-      sudo cp /root/.docker/config.json /etc/docker/config.json
-      sudo chmod a+r /etc/docker/config.json
-
-      # Ensure /etc/skel/.docker exists so that new users get this configuration by default
-      sudo mkdir -p /etc/skel/.docker
-      sudo cp /etc/docker/config.json /etc/skel/.docker/config.json
-      sudo chmod 644 /etc/skel/.docker/config.json
-
+      sudo -u runner gcloud auth configure-docker us.gcr.io --quiet
+      sudo -u github-actions gcloud auth configure-docker us.gcr.io --quiet
+      sudo -u Akarys gcloud auth configure-docker us.gcr.io --quiet
+      sudo -u d gcloud auth configure-docker us.gcr.io --quiet
+      sudo -u jasonkuster gcloud auth configure-docker us.gcr.io --quiet
+      sudo -u gke-69b374ab544ae34db2bb gcloud auth configure-docker us.gcr.io --quiet
+      sudo -u gke-5f9b041edfae58a30477 gcloud auth configure-docker us.gcr.io --quiet
+      sudo -u yarn gcloud auth configure-docker us.gcr.io --quiet
       echo "Docker config updated on '"$node"'"
     '
 }
@@ -198,15 +194,14 @@ function activate_sa_on_node_as_yarn() {
 function create() {
   upload_init_actions
   create_cluster
-  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
-    worker_name="$CLUSTER_NAME-w-$i"
-    update_docker_config_on_node "$worker_name"
-  done
-  update_docker_config_on_node "$MASTER_NAME"
   get_leader
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
-  echo "Configuring Docker credentials on all worker nodes..."
+  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
+      worker_name="$CLUSTER_NAME-w-$i"
+      update_docker_config_on_node "$worker_name"
+  done
+  update_docker_config_on_node "$MASTER_NAME"
 }
 
 # Recreates a Flink cluster.
