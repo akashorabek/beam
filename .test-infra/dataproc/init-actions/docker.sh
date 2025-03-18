@@ -84,6 +84,7 @@ function configure_gcr() {
   # Configure docker to use the credential helper for both registries
   docker-credential-gcr configure-docker
   su yarn --command "docker-credential-gcr configure-docker"
+  echo "Docker was configured"
 }
 
 function configure_docker() {
