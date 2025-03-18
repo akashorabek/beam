@@ -182,6 +182,7 @@ function update_docker_config_on_node() {
 
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo -E sh -c 'GCP_SA_KEY_BASE64=\$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64); echo \"\$GCP_SA_KEY_BASE64\" | base64 --decode > /etc/gcp_sa_key.json'"
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo chmod a+r /etc/gcp_sa_key.json"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo chown -R yarn:yarn /var/lib/hadoop-yarn/.config/gcloud"
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo -u yarn gcloud auth activate-service-account --key-file=/etc/gcp_sa_key.json --quiet"
 }
 
