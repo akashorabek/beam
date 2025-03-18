@@ -175,12 +175,8 @@ function update_docker_config_on_node() {
       sudo -u hdfs gcloud auth configure-docker --quiet
       sudo -u mapred gcloud auth configure-docker --quiet
       sudo -u spark gcloud auth configure-docker --quiet
-      sudo -u pig gcloud auth configure-docker --quiet
       sudo -u hive gcloud auth configure-docker --quiet
-      sudo -u hbase gcloud auth configure-docker --quiet
       sudo -u zookeeper gcloud auth configure-docker --quiet
-      sudo -u solr gcloud auth configure-docker --quiet
-      sudo -u zeppelin gcloud auth configure-docker --quiet
 
       echo "Done.""
     '
