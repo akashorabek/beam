@@ -126,11 +126,11 @@ function create_cluster() {
   [[ -n "${HARNESS_IMAGES_TO_PULL:=}" ]] && metadata+=",beam-sdk-harness-images-to-pull=${HARNESS_IMAGES_TO_PULL}"
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && metadata+=",beam-job-server-image=${JOB_SERVER_IMAGE}"
 
-#  if [[ -n "${GCP_SA_KEY:-}" ]]; then
-#    # Encode the service account key (base64 encoding avoids special character issues)
-#    encoded_sa_key=$(echo "$GCP_SA_KEY" | base64)
-#    metadata+=",gcp_sa_key_base64=${encoded_sa_key}"
-#  fi
+  if [[ -n "${GCP_SA_KEY:-}" ]]; then
+    # Encode the service account key (base64 encoding avoids special character issues)
+    encoded_sa_key=$(echo "$GCP_SA_KEY" | base64)
+    metadata+=",gcp_sa_key_base64=${encoded_sa_key}"
+  fi
 
   local image_version=$DATAPROC_VERSION
   echo "Starting dataproc cluster. Dataproc version: $image_version"
@@ -178,10 +178,11 @@ function update_docker_config_on_node() {
       sudo -u hive gcloud auth configure-docker --quiet
       sudo -u zookeeper gcloud auth configure-docker --quiet
 
-      echo "Done.""
     '
 
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "gcloud auth configure-docker --quiet"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo -u yarn -E sh -c 'GCP_SA_KEY_BASE64=\$(/usr/share/google/get_metadata_value attributes/gcp_sa_key_base64); echo \"\$GCP_SA_KEY_BASE64\" | base64 --decode > /etc/gcp_sa_key.json'"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command "sudo -u yarn gcloud auth activate-service-account --key-file=/etc/gcp_sa_key.json --quiet"
 }
 
 ## Helper function to activate the service account on a given node as root
