@@ -206,11 +206,11 @@ function create() {
   get_leader
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
-  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
-      worker_name="$CLUSTER_NAME-w-$i"
-      update_docker_config_on_node "$worker_name"
-  done
-  update_docker_config_on_node "$MASTER_NAME"
+#  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
+#      worker_name="$CLUSTER_NAME-w-$i"
+#      update_docker_config_on_node "$worker_name"
+#  done
+#  update_docker_config_on_node "$MASTER_NAME"
 }
 
 # Recreates a Flink cluster.
