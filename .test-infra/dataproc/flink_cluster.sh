@@ -153,7 +153,7 @@ function create_cluster() {
     # Dataproc 2.1 uses n2-standard-2 by default but there is N2 CPUs=24 quota limit for this project
     gcloud dataproc clusters create $CLUSTER_NAME --enable-component-gateway --region=$GCLOUD_REGION --num-workers=$FLINK_NUM_WORKERS --public-ip-address \
     --master-machine-type=${master_machine_type} --worker-machine-type=${worker_machine_type} --metadata "${metadata}", \
-    --image-version=$image_version --zone=$GCLOUD_ZONE --quiet --initialization-actions ${DOCKER_INIT},${FLINK_INIT}
+    --image-version=$image_version --zone=$GCLOUD_ZONE --quiet --optional-components=FLINK,DOCKER
   fi
 }
 
@@ -163,23 +163,29 @@ function update_docker_config_on_node() {
   gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet "$node" --command $'
       echo "Starting gcloud auth configure-docker for all users..."
 
-      # Loop through each user from /etc/passwd
-      while IFS=: read -r username _; do
-        echo "Processing user: $username"
-        # Attempt to run the command as the user.
-        # If it fails (e.g. due to no home directory, no gcloud, or insufficient permissions),
-        # it will print a message and continue.
-        if sudo -u "$username" gcloud auth configure-docker us.gcr.io --quiet; then
-          echo "Success for $username"
-        else
-          echo "Failed for $username (or not applicable)"
-        fi
-      done < /etc/passwd
+      sudo -u Akarys gcloud auth configure-docker --quiet
+      sudo -u runner gcloud auth configure-docker --quiet
+      sudo -u gke-69b374ab544ae34db2bb gcloud auth configure-docker --quiet
+      sudo -u gke-5f9b041edfae58a30477 gcloud auth configure-docker --quiet
+      sudo -u github-actions gcloud auth configure-docker --quiet
+      sudo -u d gcloud auth configure-docker --quiet
+      sudo -u klk gcloud auth configure-docker --quiet
+      sudo -u jasonkuster gcloud auth configure-docker --quiet
+      sudo -u yarn gcloud auth configure-docker --quiet
+      sudo -u hdfs gcloud auth configure-docker --quiet
+      sudo -u mapred gcloud auth configure-docker --quiet
+      sudo -u spark gcloud auth configure-docker --quiet
+      sudo -u pig gcloud auth configure-docker --quiet
+      sudo -u hive gcloud auth configure-docker --quiet
+      sudo -u hbase gcloud auth configure-docker --quiet
+      sudo -u zookeeper gcloud auth configure-docker --quiet
+      sudo -u solr gcloud auth configure-docker --quiet
+      sudo -u zeppelin gcloud auth configure-docker --quiet
 
       echo "Done.""
     '
 
-  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "sudo gcloud auth configure-docker us.gcr.io --quiet"
+  gcloud compute ssh --zone="$GCLOUD_ZONE" --quiet yarn@"$node" --command "gcloud auth configure-docker --quiet"
 }
 
 ## Helper function to activate the service account on a given node as root
@@ -206,11 +212,11 @@ function create() {
   get_leader
   [[ -n "${JOB_SERVER_IMAGE:=}" ]] && start_job_server
   start_tunnel
-#  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
-#      worker_name="$CLUSTER_NAME-w-$i"
-#      update_docker_config_on_node "$worker_name"
-#  done
-#  update_docker_config_on_node "$MASTER_NAME"
+  for (( i=0; i<$FLINK_NUM_WORKERS; i++ )); do
+      worker_name="$CLUSTER_NAME-w-$i"
+      update_docker_config_on_node "$worker_name"
+  done
+  update_docker_config_on_node "$MASTER_NAME"
 }
 
 # Recreates a Flink cluster.
