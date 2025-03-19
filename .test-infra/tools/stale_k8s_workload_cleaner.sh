@@ -47,7 +47,9 @@ while read NAME STATUS AGE; do
   # See https://github.com/apache/beam/pull/33545 for context.
   # This may be safe to remove if https://cloud.google.com/knowledge/kb/deleted-namespace-remains-in-terminating-status-000004867 has been resolved, just try it before checking in :)
   if [[ $NAME =~ ^beam-.+(test|-it) ]] && should_teardown $AGE; then
+    echo "First IF"
     if [[ $NAME == *s-singlestoreio-* ]]; then
+      echo "Second IF"
       kubectl patch memsqlclusters.memsql.com/sdb-cluster -n $NAME -p '[{"op": "remove", "path": "/metadata/finalizers"}]' --type=json --ignore-not-found
     fi
     kubectl delete namespace "$NAME"
