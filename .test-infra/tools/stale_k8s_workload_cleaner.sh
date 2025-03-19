@@ -40,48 +40,68 @@ function should_teardown() {
   return 1
 }
 
-function clean_namespace() {
-  local ns=$1
-  echo "Cleaning remaining resources in namespace $ns..."
+#function clean_namespace() {
+#  local ns=$1
+#  echo "Cleaning remaining resources in namespace $ns..."
+#
+#  # Get all namespaced resource types (including CRDs)
+#  local resource_types
+#  resource_types=$(kubectl api-resources --verbs=list --namespaced -o name)
+#
+#  # For each resource type, list and delete all instances in the namespace.
+#  for resource in $resource_types; do
+#    local items
+#    items=$(kubectl get "$resource" -n "$ns" -o name 2>/dev/null || true)
+#    if [ -n "$items" ]; then
+#      echo "Deleting resources of type $resource in namespace $ns:"
+#      echo "$items"
+#      echo "$items" | xargs -r kubectl delete -n "$ns"
+#    fi
+#  done
+#
+#  # Wait until no resource (including custom ones) remains.
+#  local timeout=300
+#  while true; do
+#    local remaining=""
+#    for resource in $resource_types; do
+#      local items
+#      items=$(kubectl get "$resource" -n "$ns" --ignore-not-found --no-headers 2>/dev/null || true)
+#      if [ -n "$items" ]; then
+#         remaining="${remaining}${items}"
+#      fi
+#    done
+#    if [ -z "$remaining" ]; then
+#      echo "All resources in namespace $ns have been deleted."
+#      break
+#    fi
+#    echo "Waiting for resources to be deleted in namespace $ns..."
+#    sleep 5
+#    timeout=$((timeout-5))
+#    if [ $timeout -le 0 ]; then
+#      echo "Timeout reached while waiting for resources to be deleted in namespace $ns."
+#      break
+#    fi
+#  done
+#}
 
-  # Get all namespaced resource types (including CRDs)
-  local resource_types
-  resource_types=$(kubectl api-resources --verbs=list --namespaced -o name)
-
-  # For each resource type, list and delete all instances in the namespace.
-  for resource in $resource_types; do
-    local items
-    items=$(kubectl get "$resource" -n "$ns" -o name 2>/dev/null || true)
-    if [ -n "$items" ]; then
-      echo "Deleting resources of type $resource in namespace $ns:"
-      echo "$items"
-      echo "$items" | xargs -r kubectl delete -n "$ns" --grace-period=0 --force
+function cleanup_memsqlclusters() {
+  local ns="$1"
+  if [[ "$ns" == *s-singlestoreio* ]]; then
+    echo "Namespace $ns contains 's-singlestoreio'. Checking for hanging memsqlclusters resources..."
+    local memsql_resources
+    memsql_resources=$(kubectl get memsqlclusters.memsql.com -n "$ns" -o name --ignore-not-found)
+    if [ -n "$memsql_resources" ]; then
+      echo "Found hanging memsqlclusters resources:"
+      echo "$memsql_resources"
+      echo "$memsql_resources" | xargs -r kubectl delete -n "$ns" --grace-period=0 --force
+      echo "Waiting 10 seconds after force deletion of memsqlclusters..."
+      sleep 10
+    else
+      echo "No hanging memsqlclusters resources found in namespace $ns."
     fi
-  done
-
-  # Wait until no resource (including custom ones) remains.
-  local timeout=300
-  while true; do
-    local remaining=""
-    for resource in $resource_types; do
-      local items
-      items=$(kubectl get "$resource" -n "$ns" --ignore-not-found --no-headers 2>/dev/null || true)
-      if [ -n "$items" ]; then
-         remaining="${remaining}${items}"
-      fi
-    done
-    if [ -z "$remaining" ]; then
-      echo "All resources in namespace $ns have been deleted."
-      break
-    fi
-    echo "Waiting for resources to be deleted in namespace $ns..."
-    sleep 5
-    timeout=$((timeout-5))
-    if [ $timeout -le 0 ]; then
-      echo "Timeout reached while waiting for resources to be deleted in namespace $ns."
-      break
-    fi
-  done
+  else
+    echo "Namespace $ns does not contain 's-singlestoreio'; no memsqlclusters cleanup needed."
+  fi
 }
 
 gcloud container clusters get-credentials io-datastores --zone us-central1-a --project apache-beam-testing
@@ -93,7 +113,7 @@ while read NAME STATUS AGE; do
   if [[ $NAME =~ ^beam-.+(test|-it) ]] && should_teardown $AGE; then
     echo "Processing namespace $NAME with age $AGE..."
     # First, clean the namespace by deleting any remaining resources.
-    clean_namespace "$NAME"
+    cleanup_memsqlclusters "$NAME"
     # Once the namespace is clear, delete it.
     echo "Deleting namespace $NAME..."
     kubectl delete namespace "$NAME"
