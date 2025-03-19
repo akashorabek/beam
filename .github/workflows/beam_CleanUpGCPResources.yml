@@ -77,6 +77,12 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
       - name: Install gcloud bigtable cli
         run: gcloud components install cbt
+      - name: Display active gcloud account
+        run: |
+          echo "Authenticated accounts:"
+          gcloud auth list
+          echo "Current configuration:"
+          gcloud config list account
       - name: run cleanup GCP resources
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
