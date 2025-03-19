@@ -40,6 +40,50 @@ function should_teardown() {
   return 1
 }
 
+function clean_namespace() {
+  local ns=$1
+  echo "Cleaning remaining resources in namespace $ns..."
+
+  # Get all namespaced resource types (including CRDs)
+  local resource_types
+  resource_types=$(kubectl api-resources --verbs=list --namespaced -o name)
+
+  # For each resource type, list and delete all instances in the namespace.
+  for resource in $resource_types; do
+    local items
+    items=$(kubectl get "$resource" -n "$ns" -o name 2>/dev/null || true)
+    if [ -n "$items" ]; then
+      echo "Deleting resources of type $resource in namespace $ns:"
+      echo "$items"
+      echo "$items" | xargs -r kubectl delete -n "$ns"
+    fi
+  done
+
+  # Wait until no resource (including custom ones) remains.
+  local timeout=300
+  while true; do
+    local remaining=""
+    for resource in $resource_types; do
+      local items
+      items=$(kubectl get "$resource" -n "$ns" --ignore-not-found --no-headers 2>/dev/null || true)
+      if [ -n "$items" ]; then
+         remaining="${remaining}${items}"
+      fi
+    done
+    if [ -z "$remaining" ]; then
+      echo "All resources in namespace $ns have been deleted."
+      break
+    fi
+    echo "Waiting for resources to be deleted in namespace $ns..."
+    sleep 5
+    timeout=$((timeout-5))
+    if [ $timeout -le 0 ]; then
+      echo "Timeout reached while waiting for resources to be deleted in namespace $ns."
+      break
+    fi
+  done
+}
+
 gcloud container clusters get-credentials io-datastores --zone us-central1-a --project apache-beam-testing
 
 while read NAME STATUS AGE; do
@@ -47,6 +91,11 @@ while read NAME STATUS AGE; do
   # See https://github.com/apache/beam/pull/33545 for context.
   # This may be safe to remove if https://cloud.google.com/knowledge/kb/deleted-namespace-remains-in-terminating-status-000004867 has been resolved, just try it before checking in :)
   if [[ $NAME =~ ^beam-.+(test|-it) ]] && should_teardown $AGE; then
-    kubectl delete namespace $NAME
+    echo "Processing namespace $NAME with age $AGE..."
+    # First, clean the namespace by deleting any remaining resources.
+    clean_namespace "$NAME"
+    # Once the namespace is clear, delete it.
+    echo "Deleting namespace $NAME..."
+    kubectl delete namespace "$NAME"
   fi
 done < <( kubectl get namespaces --context=gke_${PROJECT}_${LOCATION}_${CLUSTER} )
