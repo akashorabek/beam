@@ -46,7 +46,7 @@ while read NAME STATUS AGE; do
   # Regex has temporary workaround to avoid trying to delete beam-performancetests-singlestoreio-* to avoid getting stuck in a terminal state
   # See https://github.com/apache/beam/pull/33545 for context.
   # This may be safe to remove if https://cloud.google.com/knowledge/kb/deleted-namespace-remains-in-terminating-status-000004867 has been resolved, just try it before checking in :)
-  if [[ $NAME =~ ^beam-.+(test|-it)(?!s-singlestoreio) ]] && should_teardown $AGE; then
+  if [[ $NAME =~ ^beam-.+(test|-it) ]] && should_teardown $AGE; then
     kubectl delete namespace $NAME
   fi
 done < <( kubectl get namespaces --context=gke_${PROJECT}_${LOCATION}_${CLUSTER} )
