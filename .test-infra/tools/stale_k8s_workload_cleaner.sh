@@ -55,7 +55,7 @@ function clean_namespace() {
     if [ -n "$items" ]; then
       echo "Deleting resources of type $resource in namespace $ns:"
       echo "$items"
-      echo "$items" | xargs -r kubectl delete -n "$ns"
+      echo "$items" | xargs -r kubectl delete -n "$ns" --grace-period=0 --force
     fi
   done
 
