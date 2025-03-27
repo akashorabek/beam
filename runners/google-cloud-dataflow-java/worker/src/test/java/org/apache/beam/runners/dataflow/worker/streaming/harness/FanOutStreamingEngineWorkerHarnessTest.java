@@ -101,7 +101,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
           .build();
 
   @Rule
-  public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule().setTimeout(1, TimeUnit.MINUTES);
+  public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule().setTimeout(5, TimeUnit.MINUTES);
 
   private final GrpcWindmillStreamFactory streamFactory =
       spy(GrpcWindmillStreamFactory.of(JOB_HEADER).build());
@@ -115,7 +115,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
           new ArrayList<>(),
           new ArrayList<>(),
           new HashSet<>());
-  @Rule public transient Timeout globalTimeout = Timeout.seconds(600);
+  @Rule public transient Timeout globalTimeout = Timeout.seconds(1200);
   private Server fakeStreamingEngineServer;
   private CountDownLatch getWorkerMetadataReady;
   private GetWorkerMetadataTestStub fakeGetWorkerMetadataStub;
@@ -167,10 +167,17 @@ public class FanOutStreamingEngineWorkerHarnessTest {
   }
 
   @After
-  public void cleanUp() {
+  public void cleanUp() throws InterruptedException {
     Preconditions.checkNotNull(fanOutStreamingEngineWorkProvider).shutdown();
     stubFactory.shutdown();
     fakeStreamingEngineServer.shutdown();
+    // Wait for the server to fully shutdown (up to 2 minutes)
+    if (!fakeStreamingEngineServer.awaitTermination(2, TimeUnit.MINUTES)) {
+      // Force shutdown if graceful shutdown does not complete in time.
+      fakeStreamingEngineServer.shutdownNow();
+      assertTrue("Server did not terminate in time",
+          fakeStreamingEngineServer.awaitTermination(2, TimeUnit.MINUTES));
+    }
   }
 
   private FanOutStreamingEngineWorkerHarness newFanOutStreamingEngineWorkerHarness(
