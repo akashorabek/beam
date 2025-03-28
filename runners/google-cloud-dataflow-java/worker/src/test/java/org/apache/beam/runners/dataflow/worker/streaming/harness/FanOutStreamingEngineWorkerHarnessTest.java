@@ -170,13 +170,14 @@ public class FanOutStreamingEngineWorkerHarnessTest {
   public void cleanUp() throws InterruptedException {
     Preconditions.checkNotNull(fanOutStreamingEngineWorkProvider).shutdown();
     stubFactory.shutdown();
+    fakeGetWorkerMetadataStub.shutdown();
     fakeStreamingEngineServer.shutdown();
     // Wait for the server to fully shutdown (up to 2 minutes)
-    if (!fakeStreamingEngineServer.awaitTermination(2, TimeUnit.MINUTES)) {
+    if (!fakeStreamingEngineServer.awaitTermination(3, TimeUnit.MINUTES)) {
       // Force shutdown if graceful shutdown does not complete in time.
       fakeStreamingEngineServer.shutdownNow();
       assertTrue("Server did not terminate in time",
-          fakeStreamingEngineServer.awaitTermination(2, TimeUnit.MINUTES));
+          fakeStreamingEngineServer.awaitTermination(3, TimeUnit.MINUTES));
     }
   }
 
@@ -436,6 +437,12 @@ public class FanOutStreamingEngineWorkerHarnessTest {
           }
         }
       };
+    }
+
+    public void shutdown() {
+      if (responseObserver != null) {
+        responseObserver.onCompleted();
+      }
     }
 
     private void injectWorkerMetadata(WorkerMetadataResponse response) {
