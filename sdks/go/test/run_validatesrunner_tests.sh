@@ -75,7 +75,7 @@ CURRENT_DIRECTORY=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null &&
 
 # Default test targets.
 #TESTS="./test/integration/... ./test/regression"
-TESTS="./test/integration/primitives/heap_dump_test.go"
+TESTS="./test/integration/primitives"
 
 # Default runner.
 RUNNER=portable
