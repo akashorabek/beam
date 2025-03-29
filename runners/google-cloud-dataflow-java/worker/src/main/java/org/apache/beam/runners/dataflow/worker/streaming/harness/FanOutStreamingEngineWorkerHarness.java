@@ -248,21 +248,12 @@ public final class FanOutStreamingEngineWorkerHarness implements StreamingWorker
     Preconditions.checkState(started, "FanOutStreamingEngineWorkerHarness never started.");
     Preconditions.checkNotNull(getWorkerMetadataStream).shutdown();
     workerMetadataConsumer.shutdownNow();
-    try {
-      if (!workerMetadataConsumer.awaitTermination(60, TimeUnit.SECONDS)) {
-        LOG.warn("workerMetadataConsumer did not terminate in time, forcing shutdown.");
-      }
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-      LOG.warn("Interrupted waiting for workerMetadataConsumer to shutdown.", e);
-    }
-
     // Close all the streams blocking until this completes to not leak resources.
     closeStreamsNotIn(WindmillEndpoints.none()).join();
     channelCachingStubFactory.shutdown();
 
     try {
-      Preconditions.checkNotNull(getWorkerMetadataStream).awaitTermination(60, TimeUnit.SECONDS);
+      Preconditions.checkNotNull(getWorkerMetadataStream).awaitTermination(10, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       LOG.warn("Interrupted waiting for GetWorkerMetadataStream to shutdown.", e);
@@ -271,7 +262,7 @@ public final class FanOutStreamingEngineWorkerHarness implements StreamingWorker
     windmillStreamManager.shutdown();
     boolean isStreamManagerShutdown = false;
     try {
-      isStreamManagerShutdown = windmillStreamManager.awaitTermination(150, TimeUnit.SECONDS);
+      isStreamManagerShutdown = windmillStreamManager.awaitTermination(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       LOG.warn("Interrupted waiting for windmillStreamManager to shutdown.", e);
