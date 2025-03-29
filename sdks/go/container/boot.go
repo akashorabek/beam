@@ -198,6 +198,9 @@ func main() {
 		if err == nil {
 			if tempLocation, ok := opt.Options.Options["temp_location"]; ok {
 				diagnostics.UploadHeapProfile(ctx, fmt.Sprintf("%v/heapProfiles/profile-%v-%d", strings.TrimSuffix(tempLocation, "/"), *id, time.Now().Unix()))
+				logger.Printf(ctx, "Waiting for heap dump to fully upload")
+				time.Sleep(60 * time.Second)
+				logger.Printf(ctx, "Finished Waiting")
 			}
 		}
 	}

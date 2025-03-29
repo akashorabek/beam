@@ -53,7 +53,9 @@ func TestOomParDo(t *testing.T) {
 	startFiles := len(files)
 
 	ptest.Run(OomParDo())
-
+	t.Logf("(test) Waiting 60 seconds for heap dump generation to complete...")
+	time.Sleep(60 * time.Second)
+	t.Logf("(test) Finished waiting")
 	files, err = fs.List(ctx, dumpLocation)
 	if err != nil {
 		t.Fatalf("Failed to connect to filesystem: %v", err)
