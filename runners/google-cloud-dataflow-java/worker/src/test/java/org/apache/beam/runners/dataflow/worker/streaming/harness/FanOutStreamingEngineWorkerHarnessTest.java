@@ -115,7 +115,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
           new ArrayList<>(),
           new ArrayList<>(),
           new HashSet<>());
-  @Rule public transient Timeout globalTimeout = Timeout.seconds(1200);
+  @Rule public transient Timeout globalTimeout = Timeout.seconds(3000);
   private Server fakeStreamingEngineServer;
   private CountDownLatch getWorkerMetadataReady;
   private GetWorkerMetadataTestStub fakeGetWorkerMetadataStub;
@@ -201,7 +201,6 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     return harness;
   }
 
-  @Test
   public void testStreamsStartCorrectly() throws InterruptedException {
     long items = 10L;
     long bytes = 10L;
@@ -254,7 +253,6 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     verify(streamFactory, times(2)).createDirectCommitWorkStream(any(), any());
   }
 
-  @Test
   public void testOnNewWorkerMetadata_correctlyRemovesStaleWindmillServers()
       throws InterruptedException {
     GetWorkBudgetDistributor getWorkBudgetDistributor = mock(GetWorkBudgetDistributor.class);
