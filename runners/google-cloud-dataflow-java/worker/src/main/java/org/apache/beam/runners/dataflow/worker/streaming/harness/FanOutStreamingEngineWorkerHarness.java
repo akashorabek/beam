@@ -354,11 +354,11 @@ public final class FanOutStreamingEngineWorkerHarness implements StreamingWorker
   }
 
   private void closeStreamSender(Endpoint endpoint, StreamSender sender) {
-    LOG.debug("Closing streams to endpoint={}, sender={}", endpoint, sender);
+    LOG.info("Closing streams to endpoint={}, sender={}", endpoint, sender);
     try {
       sender.close();
       endpoint.directEndpoint().ifPresent(channelCachingStubFactory::remove);
-      LOG.debug("Successfully closed streams to {}", endpoint);
+      LOG.info("Successfully closed streams to {}", endpoint);
     } catch (Exception e) {
       LOG.error("Error closing streams to endpoint={}, sender={}", endpoint, sender);
     }
