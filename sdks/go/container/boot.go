@@ -25,6 +25,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -53,6 +54,13 @@ var (
 	controlEndpoint   = flag.String("control_endpoint", "", "Local control endpoint for FnHarness (required).")
 	semiPersistDir    = flag.String("semi_persist_dir", "/tmp", "Local semi-persistent directory (optional).")
 )
+
+var reserve []byte
+
+func init() {
+	// Reserve 10 MB of memory.
+	reserve = make([]byte, 100*1024*1024)
+}
 
 const (
 	cloudProfilingJobName           = "CLOUD_PROF_JOB_NAME"
@@ -189,6 +197,9 @@ func main() {
 			logger.Printf(ctx, "could not configure Google Cloud Profiler variables, got %v", err)
 		}
 	}
+
+	reserve = nil
+	runtime.GC()
 
 	err = execx.Execute(prog, args...)
 	logger.Printf(ctx, "First check of if")
