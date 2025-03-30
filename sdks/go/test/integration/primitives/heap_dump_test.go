@@ -31,6 +31,9 @@ import (
 )
 
 func TestOomParDo(t *testing.T) {
+	flag.String("project", "", "dummy flag for project")
+	flag.String("region", "", "dummy flag for region")
+	flag.String("dataflow_project", "", "dummy flag for dataflow_project")
 	integration.CheckFilters(t)
 	if flag.Lookup("temp_location") == nil {
 		t.Fatalf("A temp_location must be provided to correctly run TestOomParDo")
