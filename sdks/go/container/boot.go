@@ -25,14 +25,14 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
 	"github.com/apache/beam/sdks/v2/go/container/pool"
 	"github.com/apache/beam/sdks/v2/go/container/tools"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/artifact"
-	"github.com/apache/beam/sdks/v2/go/pkg/beam/core/runtime"
-
+	beamrt "github.com/apache/beam/sdks/v2/go/pkg/beam/core/runtime"
 	// Import gcs filesystem so that it can be used to upload heap dumps
 	_ "github.com/apache/beam/sdks/v2/go/pkg/beam/io/filesystem/gcs"
 	fnpb "github.com/apache/beam/sdks/v2/go/pkg/beam/model/fnexecution_v1"
@@ -204,7 +204,7 @@ func main() {
 	logger.Printf(ctx, "First check of if")
 	if err != nil {
 		logger.Printf(ctx, "Second check of if")
-		var opt runtime.RawOptionsWrapper
+		var opt beamrt.RawOptionsWrapper
 		err := json.Unmarshal([]byte(options), &opt)
 		if err == nil {
 			logger.Printf(ctx, "Third check of if")
