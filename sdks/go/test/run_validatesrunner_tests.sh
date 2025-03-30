@@ -383,7 +383,7 @@ if [[ "$RUNNER" == "dataflow" ]]; then
   fi
 
   if [[ -n "$TEST_EXPANSION_ADDR" || -n "$IO_EXPANSION_ADDR" || -n "$SCHEMAIO_EXPANSION_ADDR" || -n "$DEBEZIUMIO_EXPANSION_ADDR" ]]; then
-    ARGS="$ARGS --experiments=use_portable_job_submission"
+    ARGS="$ARGS --experiments=use_portable_job_submission --dumpHeapOnOom=true --saveHeapDumpsToGcsPath=$GCS_LOCATION/temp-validatesrunner-test/$GCS_SUBFOLDER/myHeapDump"
 
     if [[ -z "$SDK_OVERRIDES" ]]; then
       # Build the java container for cross-language
