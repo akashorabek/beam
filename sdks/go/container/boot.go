@@ -191,11 +191,13 @@ func main() {
 	}
 
 	err = execx.Execute(prog, args...)
-
+	logger.Printf(ctx, "First check of if")
 	if err != nil {
+		logger.Printf(ctx, "Second check of if")
 		var opt runtime.RawOptionsWrapper
 		err := json.Unmarshal([]byte(options), &opt)
 		if err == nil {
+			logger.Printf(ctx, "Third check of if")
 			if tempLocation, ok := opt.Options.Options["temp_location"]; ok {
 				diagnostics.UploadHeapProfile(ctx, fmt.Sprintf("%v/heapProfiles/profile-%v-%d", strings.TrimSuffix(tempLocation, "/"), *id, time.Now().Unix()))
 				logger.Printf(ctx, "Waiting for heap dump to fully upload")

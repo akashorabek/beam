@@ -27,6 +27,7 @@ import (
 	_ "github.com/apache/beam/sdks/v2/go/pkg/beam/io/filesystem/gcs"
 	"github.com/apache/beam/sdks/v2/go/pkg/beam/testing/ptest"
 	"github.com/apache/beam/sdks/v2/go/test/integration"
+	"github.com/apache/beam/sdks/v2/go/test/integration/primitives"
 )
 
 func TestOomParDo(t *testing.T) {
@@ -53,7 +54,7 @@ func TestOomParDo(t *testing.T) {
 	}
 	startFiles := len(files)
 
-	ptest.Run(OomParDo())
+	ptest.Run(primitives.OomParDo())
 	t.Logf("(test) Waiting 60 seconds for heap dump generation to complete...")
 	time.Sleep(60 * time.Second)
 	t.Logf("(test) Finished waiting")
