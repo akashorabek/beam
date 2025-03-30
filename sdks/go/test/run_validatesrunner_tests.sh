@@ -383,7 +383,7 @@ if [[ "$RUNNER" == "dataflow" ]]; then
   fi
 
   if [[ -n "$TEST_EXPANSION_ADDR" || -n "$IO_EXPANSION_ADDR" || -n "$SCHEMAIO_EXPANSION_ADDR" || -n "$DEBEZIUMIO_EXPANSION_ADDR" ]]; then
-    ARGS="$ARGS --experiments=use_portable_job_submission --dumpHeapOnOom=true --saveHeapDumpsToGcsPath=$GCS_LOCATION/temp-validatesrunner-test/$GCS_SUBFOLDER/myHeapDump"
+    ARGS="$ARGS --experiments=use_portable_job_submission"
 
     if [[ -z "$SDK_OVERRIDES" ]]; then
       # Build the java container for cross-language
@@ -422,6 +422,8 @@ ARGS="$ARGS --environment_config=$CONTAINER:$TAG"
 ARGS="$ARGS --staging_location=$GCS_LOCATION/staging-validatesrunner-test/$GCS_SUBFOLDER"
 ARGS="$ARGS --temp_location=$GCS_LOCATION/temp-validatesrunner-test/$GCS_SUBFOLDER"
 ARGS="$ARGS --endpoint=$ENDPOINT"
+ARGS="$ARGS --dumpHeapOnOom=true"
+ARGS="$ARGS --saveHeapDumpsToGcsPath=$GCS_LOCATION/temp-validatesrunner-test/$GCS_SUBFOLDER/myHeapDump"
 if [[ -n "$TEST_EXPANSION_ADDR" ]]; then
   ARGS="$ARGS --test_expansion_addr=$TEST_EXPANSION_ADDR"
 fi
