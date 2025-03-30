@@ -176,7 +176,8 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     if (!fakeStreamingEngineServer.awaitTermination(3, TimeUnit.MINUTES)) {
       // Force shutdown if graceful shutdown does not complete in time.
       fakeStreamingEngineServer.shutdownNow();
-      assertTrue("Server did not terminate in time",
+      assertTrue(
+          "Server did not terminate in time",
           fakeStreamingEngineServer.awaitTermination(3, TimeUnit.MINUTES));
     }
   }
@@ -201,6 +202,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     return harness;
   }
 
+  @Test
   public void testStreamsStartCorrectly() throws InterruptedException {
     long items = 10L;
     long bytes = 10L;
@@ -253,6 +255,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     verify(streamFactory, times(2)).createDirectCommitWorkStream(any(), any());
   }
 
+  @Test
   public void testOnNewWorkerMetadata_correctlyRemovesStaleWindmillServers()
       throws InterruptedException {
     GetWorkBudgetDistributor getWorkBudgetDistributor = mock(GetWorkBudgetDistributor.class);
