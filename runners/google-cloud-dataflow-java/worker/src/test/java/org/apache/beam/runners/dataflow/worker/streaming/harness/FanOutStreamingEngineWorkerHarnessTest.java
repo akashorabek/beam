@@ -168,9 +168,9 @@ public class FanOutStreamingEngineWorkerHarnessTest {
 
   @After
   public void cleanUp() throws InterruptedException {
+    fakeGetWorkerMetadataStub.shutdown();
     Preconditions.checkNotNull(fanOutStreamingEngineWorkProvider).shutdown();
     stubFactory.shutdown();
-    fakeGetWorkerMetadataStub.shutdown();
     fakeStreamingEngineServer.shutdown();
     // Wait for the server to fully shutdown (up to 2 minutes)
     if (!fakeStreamingEngineServer.awaitTermination(3, TimeUnit.MINUTES)) {
@@ -439,7 +439,11 @@ public class FanOutStreamingEngineWorkerHarnessTest {
 
     public void shutdown() {
       if (responseObserver != null) {
-        responseObserver.onCompleted();
+        try {
+          responseObserver.onCompleted();
+        } catch (IllegalStateException e) {
+          // Stream already closed.
+        }
       }
     }
 
