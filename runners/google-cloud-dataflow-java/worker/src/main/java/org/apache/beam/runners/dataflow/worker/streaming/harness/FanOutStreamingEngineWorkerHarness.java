@@ -336,7 +336,7 @@ public final class FanOutStreamingEngineWorkerHarness implements StreamingWorker
                 entry ->
                     CompletableFuture.runAsync(
                         () -> closeStreamSender(entry.getKey(), entry.getValue()),
-                        windmillStreamManager).orTimeout(60, TimeUnit.SECONDS));
+                        windmillStreamManager));
 
     Set<Endpoint> newGlobalDataEndpoints =
         new HashSet<>(newWindmillEndpoints.globalDataEndpoints().values());
