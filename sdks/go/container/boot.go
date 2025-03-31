@@ -45,13 +45,15 @@ import (
 var (
 	// Contract: https://s.apache.org/beam-fn-api-container-contract.
 
-	workerPool        = flag.Bool("worker_pool", false, "Run as worker pool (optional).")
-	id                = flag.String("id", "", "Local identifier (required).")
-	loggingEndpoint   = flag.String("logging_endpoint", "", "Local logging endpoint for FnHarness (required).")
-	artifactEndpoint  = flag.String("artifact_endpoint", "", "Local artifact endpoint for FnHarness (required).")
-	provisionEndpoint = flag.String("provision_endpoint", "", "Local provision endpoint for FnHarness (required).")
-	controlEndpoint   = flag.String("control_endpoint", "", "Local control endpoint for FnHarness (required).")
-	semiPersistDir    = flag.String("semi_persist_dir", "/tmp", "Local semi-persistent directory (optional).")
+	workerPool             = flag.Bool("worker_pool", false, "Run as worker pool (optional).")
+	id                     = flag.String("id", "", "Local identifier (required).")
+	loggingEndpoint        = flag.String("logging_endpoint", "", "Local logging endpoint for FnHarness (required).")
+	artifactEndpoint       = flag.String("artifact_endpoint", "", "Local artifact endpoint for FnHarness (required).")
+	provisionEndpoint      = flag.String("provision_endpoint", "", "Local provision endpoint for FnHarness (required).")
+	controlEndpoint        = flag.String("control_endpoint", "", "Local control endpoint for FnHarness (required).")
+	semiPersistDir         = flag.String("semi_persist_dir", "/tmp", "Local semi-persistent directory (optional).")
+	dumpHeapOnOom          = flag.Bool("dumpHeapOnOom", true, "If true, dump heap on OOM")
+	saveHeapDumpsToGcsPath = flag.String("saveHeapDumpsToGcsPath", "", "GCS path to save heap dumps")
 )
 
 var reserve []byte
