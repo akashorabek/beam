@@ -176,12 +176,10 @@ func Translate(ctx context.Context, p *pipepb.Pipeline, opts *JobOptions, worker
 			SdkPipelineOptions: newMsg(pipelineOptions{
 				DisplayData: printOptions(opts, images),
 				Options: dataflowOptions{
-					PipelineURL:            modelURL,
-					Region:                 opts.Region,
-					Experiments:            opts.Experiments,
-					TempLocation:           opts.TempLocation,
-					DumpHeapOnOom:          true,
-					SaveHeapDumpsToGcsPath: "gs://temp-storage-for-end-to-end-tests/temp-validatesrunner-test/test14256/myHeapDump",
+					PipelineURL:  modelURL,
+					Region:       opts.Region,
+					Experiments:  opts.Experiments,
+					TempLocation: opts.TempLocation,
 				},
 				GoOptions: opts.Options,
 			}),
@@ -198,20 +196,16 @@ func Translate(ctx context.Context, p *pipepb.Pipeline, opts *JobOptions, worker
 				Packages:                    packages,
 				WorkerHarnessContainerImage: opts.ContainerImage,
 				SdkHarnessContainerImages:   dfImages,
-				NumWorkers:                  1,
+				NumWorkers:                  2,
 				MachineType:                 opts.MachineType,
 				Network:                     opts.Network,
 				Subnetwork:                  opts.Subnetwork,
 				Zone:                        opts.Zone,
-				dumpHeapOnOom:               true,
-				saveHeapDumpsToGcsPath:      "gs://temp-storage-for-end-to-end-tests/temp-validatesrunner-test/test14256/myHeapDump",
 			}},
-			WorkerRegion:           opts.WorkerRegion,
-			WorkerZone:             opts.WorkerZone,
-			TempStoragePrefix:      opts.TempLocation,
-			Experiments:            opts.Experiments,
-			dumpHeapOnOom:          true,
-			saveHeapDumpsToGcsPath: "gs://temp-storage-for-end-to-end-tests/temp-validatesrunner-test/test14256/myHeapDump",
+			WorkerRegion:      opts.WorkerRegion,
+			WorkerZone:        opts.WorkerZone,
+			TempStoragePrefix: opts.TempLocation,
+			Experiments:       opts.Experiments,
 		},
 		Labels:               opts.Labels,
 		TransformNameMapping: opts.TransformNameMapping,
@@ -354,12 +348,10 @@ func GetMetrics(ctx context.Context, client *df.Service, project, region, jobID 
 // pipeline options that are communicated to cross-language SDK harnesses, so any pipeline options
 // needed for cross-language transforms in Dataflow must be declared here.
 type dataflowOptions struct {
-	Experiments            []string `json:"experiments,omitempty"`
-	PipelineURL            string   `json:"pipelineUrl"`
-	Region                 string   `json:"region"`
-	TempLocation           string   `json:"tempLocation"`
-	DumpHeapOnOom          bool     `json:"dumpHeapOnOom"`
-	SaveHeapDumpsToGcsPath string   `json:"saveHeapDumpsToGcsPath"`
+	Experiments  []string `json:"experiments,omitempty"`
+	PipelineURL  string   `json:"pipelineUrl"`
+	Region       string   `json:"region"`
+	TempLocation string   `json:"tempLocation"`
 }
 
 func printOptions(opts *JobOptions, images []string) []*displayData {
