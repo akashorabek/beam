@@ -197,7 +197,6 @@ func main() {
 		}
 	}
 
-	reserve = nil
 	runtime.GC()
 
 	err = execx.Execute(prog, args...)
@@ -216,6 +215,8 @@ func main() {
 			}
 		}
 	}
+
+	reserve = nil
 
 	logger.Fatalf(ctx, "User program exited: %v", err)
 }
