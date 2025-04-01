@@ -423,6 +423,7 @@ ARGS="$ARGS --staging_location=$GCS_LOCATION/staging-validatesrunner-test/$GCS_S
 ARGS="$ARGS --temp_location=$GCS_LOCATION/temp-validatesrunner-test/$GCS_SUBFOLDER"
 ARGS="$ARGS --endpoint=$ENDPOINT"
 ARGS="$ARGS --dumpHeapOnOom=true"
+ARGS="$ARGS --dumpHeapOnOOM=true"
 ARGS="$ARGS --saveHeapDumpsToGcsPath=$GCS_LOCATION/temp-validatesrunner-test/$GCS_SUBFOLDER/myHeapDump"
 if [[ -n "$TEST_EXPANSION_ADDR" ]]; then
   ARGS="$ARGS --test_expansion_addr=$TEST_EXPANSION_ADDR"
