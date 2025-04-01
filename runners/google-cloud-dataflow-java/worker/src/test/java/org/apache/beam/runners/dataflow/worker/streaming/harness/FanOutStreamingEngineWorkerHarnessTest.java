@@ -168,6 +168,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
 
   @After
   public void cleanUp() {
+    // info
     Preconditions.checkNotNull(fanOutStreamingEngineWorkProvider).shutdown();
     stubFactory.shutdown();
     fakeStreamingEngineServer.shutdown();
