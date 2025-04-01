@@ -133,7 +133,7 @@ class BigQueryQueryToTableIT(unittest.TestCase):
     self.bigquery_client.client.tables.Insert(request)
 
     # Wait for table creation to propagate.
-    time.sleep(5)
+    time.sleep(10)
 
     table_data = [{
         'bytes': b'xyw', 'date': '2011-01-01', 'time': '23:59:59.999999'

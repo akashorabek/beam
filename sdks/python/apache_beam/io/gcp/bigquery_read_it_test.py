@@ -160,6 +160,7 @@ class ReadTests(BigQueryReadIntegrationTests):
     cls.bigquery_client.client.tables.Insert(request)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, cls.TABLE_DATA)
+    time.sleep(10)
 
   @skip(['PortableRunner', 'FlinkRunner'])
   @pytest.mark.it_postcommit
@@ -397,6 +398,7 @@ class ReadUsingStorageApiTests(BigQueryReadIntegrationTests):
     cls.bigquery_client.client.tables.Insert(request)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, cls.TABLE_DATA)
+    time.sleep(10)
 
   @classmethod
   def _setup_temporary_dataset(cls, project, query):
@@ -674,6 +676,7 @@ class ReadNewTypesTests(BigQueryReadIntegrationTests):
 
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, table_data)
+    time.sleep(10)
 
   def get_expected_data(self, native=True):
     byts = b'\xab\xac'
@@ -760,8 +763,7 @@ class ReadAllBQTests(BigQueryReadIntegrationTests):
     cls.table_name2 = 'python_rd_table_2'
     cls.table_schema2 = cls.create_table(
         cls.table_name2, cls.TABLE_DATA_2, cls.SCHEMA_BQ)
-    table_id2 = '{}.{}'.format(cls.dataset_id, cls.table_name2)
-    cls.query2 = 'SELECT number, str FROM %s' % table_id2
+    cls.query2 = 'SELECT number, str FROM [%s:%s.%s]' % (cls.project, cls.dataset_id, cls.table_name2)
 
     cls.table_name3 = 'python_rd_table_3'
     cls.table_schema3 = cls.create_table(
@@ -781,6 +783,7 @@ class ReadAllBQTests(BigQueryReadIntegrationTests):
     cls.bigquery_client.client.tables.Insert(request)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, data)
+    time.sleep(10)
     return table_schema
 
   @classmethod
