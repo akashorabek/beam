@@ -52,7 +52,7 @@ var (
 	BigtableInstance = flag.String("bt_instance", "",
 		"Name of the Bigtable instance to create tables in for Bigtable tests.")
 
-	dumpHeapOnOom          = flag.Bool("dumpHeapOnOom", true, "If true, dump heap on OOM")
+	dumpHeapOnOOM          = flag.Bool("dumpHeapOnOOM", true, "If true, dump heap on OOM")
 	saveHeapDumpsToGcsPath = flag.String("saveHeapDumpsToGcsPath", "", "GCS path to save heap dumps")
 
 	// ExpansionJars contains elements in the form "label:jar" describing jar
