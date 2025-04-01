@@ -170,6 +170,9 @@ public class FanOutStreamingEngineWorkerHarnessTest {
   public void cleanUp() throws InterruptedException {
     // info
     Preconditions.checkNotNull(fanOutStreamingEngineWorkProvider).shutdown();
+    if (fakeGetWorkerMetadataStub != null) {
+      fakeGetWorkerMetadataStub.complete();
+    }
     stubFactory.shutdown();
     fakeStreamingEngineServer.shutdown();
     fakeStreamingEngineServer.awaitTermination(60, TimeUnit.SECONDS);
@@ -436,6 +439,12 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     private void injectWorkerMetadata(WorkerMetadataResponse response) {
       if (responseObserver != null) {
         responseObserver.onNext(response);
+      }
+    }
+
+    public void complete() {
+      if (responseObserver != null) {
+        responseObserver.onCompleted();
       }
     }
   }
