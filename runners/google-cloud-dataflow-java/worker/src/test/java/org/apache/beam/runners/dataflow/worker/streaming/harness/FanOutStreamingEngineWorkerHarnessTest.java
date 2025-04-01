@@ -17,9 +17,7 @@
  */
 package org.apache.beam.runners.dataflow.worker.streaming.harness;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeast;
@@ -172,10 +170,13 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     Preconditions.checkNotNull(fanOutStreamingEngineWorkProvider).shutdown();
     if (fakeGetWorkerMetadataStub != null) {
       fakeGetWorkerMetadataStub.complete();
+      fakeGetWorkerMetadataStub.cancel();
     }
     stubFactory.shutdown();
-    fakeStreamingEngineServer.shutdown();
-    fakeStreamingEngineServer.awaitTermination(60, TimeUnit.SECONDS);
+    fakeStreamingEngineServer.shutdownNow();
+    if (!fakeStreamingEngineServer.awaitTermination(3, TimeUnit.MINUTES)) {
+      fail("Server did not terminate in time after force shutdown");
+    }
   }
 
   private FanOutStreamingEngineWorkerHarness newFanOutStreamingEngineWorkerHarness(
@@ -444,7 +445,17 @@ public class FanOutStreamingEngineWorkerHarnessTest {
 
     public void complete() {
       if (responseObserver != null) {
-        responseObserver.onCompleted();
+        try {
+          responseObserver.onCompleted();
+        } catch (IllegalStateException e) {
+          // Stream already closed.
+        }
+      }
+    }
+
+    public void cancel() {
+      if (responseObserver != null) {
+        responseObserver.onError(new RuntimeException("Test shutdown: cancelling metadata stream"));
       }
     }
   }
