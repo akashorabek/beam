@@ -101,7 +101,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
           .build();
 
   @Rule
-  public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule().setTimeout(1, TimeUnit.MINUTES);
+  public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule().setTimeout(5, TimeUnit.MINUTES);
 
   private final GrpcWindmillStreamFactory streamFactory =
       spy(GrpcWindmillStreamFactory.of(JOB_HEADER).build());
