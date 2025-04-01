@@ -19,6 +19,8 @@
 API (https://cloud.google.com/recommendations).
 """
 
+import tenacity
+
 from __future__ import absolute_import
 
 from typing import Sequence
@@ -154,13 +156,19 @@ class _CreateCatalogItemFn(DoFn):
     request = recommendationengine.CreateCatalogItemRequest(
         parent=self.parent, catalog_item=catalog_item)
 
-    try:
-      created_catalog_item = self._client.create_catalog_item(
+    @tenacity.retry(
+        wait=tenacity.wait_exponential(multiplier=1, min=1, max=10),
+        stop=tenacity.stop_after_attempt(5),
+        reraise=True)
+    def create_item():
+      return self._client.create_catalog_item(
           request=request,
           retry=self.retry,
           timeout=self.timeout,
           metadata=self.metadata)
 
+    try:
+      created_catalog_item = create_item()
       self.counter.inc()
       yield recommendationengine.CatalogItem.to_dict(created_catalog_item)
     except Exception:
