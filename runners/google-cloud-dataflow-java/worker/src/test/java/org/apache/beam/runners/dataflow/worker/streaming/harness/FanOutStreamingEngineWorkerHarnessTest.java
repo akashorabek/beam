@@ -167,11 +167,12 @@ public class FanOutStreamingEngineWorkerHarnessTest {
   }
 
   @After
-  public void cleanUp() {
+  public void cleanUp() throws InterruptedException {
     // info
     Preconditions.checkNotNull(fanOutStreamingEngineWorkProvider).shutdown();
     stubFactory.shutdown();
     fakeStreamingEngineServer.shutdown();
+    fakeStreamingEngineServer.awaitTermination(60, TimeUnit.SECONDS);
   }
 
   private FanOutStreamingEngineWorkerHarness newFanOutStreamingEngineWorkerHarness(
