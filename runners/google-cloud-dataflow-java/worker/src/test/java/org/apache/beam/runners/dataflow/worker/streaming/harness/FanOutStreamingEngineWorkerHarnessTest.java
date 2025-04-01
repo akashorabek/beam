@@ -455,7 +455,11 @@ public class FanOutStreamingEngineWorkerHarnessTest {
 
     public void cancel() {
       if (responseObserver != null) {
-        responseObserver.onError(new RuntimeException("Test shutdown: cancelling metadata stream"));
+        try {
+          responseObserver.onError(new RuntimeException("Test shutdown: cancelling metadata stream"));
+        } catch (IllegalStateException e) {
+          // Stream already closed.
+        }
       }
     }
   }
