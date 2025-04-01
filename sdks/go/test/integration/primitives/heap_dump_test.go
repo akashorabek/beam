@@ -29,10 +29,6 @@ import (
 )
 
 func TestOomParDo(t *testing.T) {
-	// Skip this test because its behavior is non-deterministic:
-	// sometimes the worker is killed by OOM before the heap dump code in boot.go is reached,
-	// so no dump file is created.
-	t.Skip("Skipping TestOomParDo due to non-deterministic OOM dump creation")
 	integration.CheckFilters(t)
 	if flag.Lookup("temp_location") == nil {
 		t.Fatalf("A temp_location must be provided to correctly run TestOomParDo")
