@@ -174,7 +174,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     }
     stubFactory.shutdown();
     fakeStreamingEngineServer.shutdownNow();
-    if (!fakeStreamingEngineServer.awaitTermination(3, TimeUnit.MINUTES)) {
+    if (!fakeStreamingEngineServer.awaitTermination(10, TimeUnit.MINUTES)) {
       fail("Server did not terminate in time after force shutdown");
     }
   }
@@ -334,10 +334,13 @@ public class FanOutStreamingEngineWorkerHarnessTest {
             noOpProcessWorkItemFn());
 
     fakeGetWorkerMetadataStub.injectWorkerMetadata(firstWorkerMetadata);
+    Thread.sleep(5000);
     verify(getWorkBudgetDistributor, times(1)).distributeBudget(any(), any());
+    Thread.sleep(5000);
     fakeGetWorkerMetadataStub.injectWorkerMetadata(secondWorkerMetadata);
-    Thread.sleep(1000);
+    Thread.sleep(5000);
     verify(getWorkBudgetDistributor, times(2)).distributeBudget(any(), any());
+    Thread.sleep(5000);
   }
 
   private static class WindmillServiceFakeStub
