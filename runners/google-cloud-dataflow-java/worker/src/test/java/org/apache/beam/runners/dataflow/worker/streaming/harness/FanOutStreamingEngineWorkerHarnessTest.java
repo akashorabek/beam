@@ -335,13 +335,9 @@ public class FanOutStreamingEngineWorkerHarnessTest {
 
 
     fakeGetWorkerMetadataStub.injectWorkerMetadata(firstWorkerMetadata);
-    Thread.sleep(5000);
     verify(getWorkBudgetDistributor, times(1)).distributeBudget(any(), any());
-    Thread.sleep(5000);
     fakeGetWorkerMetadataStub.injectWorkerMetadata(secondWorkerMetadata);
-    Thread.sleep(5000);
     verify(getWorkBudgetDistributor, times(2)).distributeBudget(any(), any());
-    Thread.sleep(5000);
   }
 
   private static class WindmillServiceFakeStub
