@@ -99,7 +99,7 @@ class BigQueryReadIntegrationTests(unittest.TestCase):
 
     cls.bigquery_client = BigQueryWrapper()
     cls.dataset_id = '%s%d%s' % (
-        cls.BIG_QUERY_DATASET_ID, int(time.time()), secrets.token_hex(3))
+        cls.BIG_QUERY_DATASET_ID, int(mod_time.time()), secrets.token_hex(3))
     cls.bigquery_client.get_or_create_dataset(cls.project, cls.dataset_id)
     _LOGGER.info(
         "Created dataset %s in project %s", cls.dataset_id, cls.project)
@@ -333,7 +333,7 @@ class ReadUsingStorageApiTests(BigQueryReadIntegrationTests):
   def setUpClass(cls):
     super(ReadUsingStorageApiTests, cls).setUpClass()
     cls.table_name = '%s%d%s' % (
-        cls.BIG_QUERY_DATASET_ID, int(time.time()), secrets.token_hex(3))
+        cls.BIG_QUERY_DATASET_ID, int(mod_time.time()), secrets.token_hex(3))
     cls._create_table(cls.table_name)
 
     table_id = '{}.{}'.format(cls.dataset_id, cls.table_name)
@@ -411,7 +411,7 @@ class ReadUsingStorageApiTests(BigQueryReadIntegrationTests):
         'materializing_table_before_reading',
         str(uuid.uuid4())[0:10],
         bigquery_tools.BigQueryJobTypes.QUERY,
-        '%d_%s' % (int(time.time()), secrets.token_hex(3)))
+        '%d_%s' % (int(mod_time.time()), secrets.token_hex(3)))
     cls._setup_temporary_dataset(cls.project, cls.query)
     job = cls.bigquery_client._start_query_job(
         project,
