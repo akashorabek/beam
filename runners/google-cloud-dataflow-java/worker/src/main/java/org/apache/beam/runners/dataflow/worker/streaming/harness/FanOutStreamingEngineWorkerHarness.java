@@ -247,6 +247,7 @@ public final class FanOutStreamingEngineWorkerHarness implements StreamingWorker
   public synchronized void shutdown() {
     Preconditions.checkState(started, "FanOutStreamingEngineWorkerHarness never started.");
     Preconditions.checkNotNull(getWorkerMetadataStream).shutdown();
+    getWorkerMetadataStream.shutdown();
     workerMetadataConsumer.shutdownNow();
     // Close all the streams blocking until this completes to not leak resources.
     closeStreamsNotIn(WindmillEndpoints.none()).join();
