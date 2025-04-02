@@ -24,7 +24,7 @@ import base64
 import datetime
 import logging
 import secrets
-import time
+import time as mod_time
 import unittest
 import uuid
 from decimal import Decimal
@@ -160,7 +160,7 @@ class ReadTests(BigQueryReadIntegrationTests):
     cls.bigquery_client.client.tables.Insert(request)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, cls.TABLE_DATA)
-    time.sleep(10)
+    mod_time.sleep(10)
 
   @skip(['PortableRunner', 'FlinkRunner'])
   @pytest.mark.it_postcommit
@@ -398,7 +398,7 @@ class ReadUsingStorageApiTests(BigQueryReadIntegrationTests):
     cls.bigquery_client.client.tables.Insert(request)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, cls.TABLE_DATA)
-    time.sleep(10)
+    mod_time.sleep(10)
 
   @classmethod
   def _setup_temporary_dataset(cls, project, query):
@@ -676,7 +676,7 @@ class ReadNewTypesTests(BigQueryReadIntegrationTests):
 
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, table_data)
-    time.sleep(10)
+    mod_time.sleep(10)
 
   def get_expected_data(self, native=True):
     byts = b'\xab\xac'
@@ -783,7 +783,7 @@ class ReadAllBQTests(BigQueryReadIntegrationTests):
     cls.bigquery_client.client.tables.Insert(request)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, data)
-    time.sleep(10)
+    mod_time.sleep(10)
     return table_schema
 
   @classmethod
