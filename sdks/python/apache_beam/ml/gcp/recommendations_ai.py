@@ -19,12 +19,11 @@
 API (https://cloud.google.com/recommendations).
 """
 
-import tenacity
-
 from __future__ import absolute_import
 
 from typing import Sequence
 from typing import Tuple
+import tenacity
 
 from google.api_core.retry import Retry
 
