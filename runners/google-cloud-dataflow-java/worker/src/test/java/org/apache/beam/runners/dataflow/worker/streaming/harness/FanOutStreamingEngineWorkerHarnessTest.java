@@ -175,7 +175,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     stubFactory.shutdown();
     fakeStreamingEngineServer.shutdownNow();
     if (!fakeStreamingEngineServer.awaitTermination(10, TimeUnit.MINUTES)) {
-      fail("Server did not terminate in time after force shutdown");
+      fail("Server did not terminate in time after force shutdown ");
     }
   }
 
