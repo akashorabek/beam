@@ -304,6 +304,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
 
   @Test
   public void testOnNewWorkerMetadata_redistributesBudget() throws InterruptedException {
+    assertEquals(1, 2);
     String workerToken = "workerToken1";
     String workerToken2 = "workerToken2";
 
