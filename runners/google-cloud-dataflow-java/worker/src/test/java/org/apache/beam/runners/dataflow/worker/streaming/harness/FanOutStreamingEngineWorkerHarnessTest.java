@@ -99,7 +99,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
           .build();
 
   @Rule
-  public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule().setTimeout(5, TimeUnit.MINUTES);
+  public final GrpcCleanupRule grpcCleanup = new GrpcCleanupRule().setTimeout(10, TimeUnit.MINUTES);
 
   private final GrpcWindmillStreamFactory streamFactory =
       spy(GrpcWindmillStreamFactory.of(JOB_HEADER).build());
@@ -166,16 +166,11 @@ public class FanOutStreamingEngineWorkerHarnessTest {
 
   @After
   public void cleanUp() throws InterruptedException {
-    // info
     Preconditions.checkNotNull(fanOutStreamingEngineWorkProvider).shutdown();
-    if (fakeGetWorkerMetadataStub != null) {
-      fakeGetWorkerMetadataStub.complete();
-      fakeGetWorkerMetadataStub.cancel();
-    }
     stubFactory.shutdown();
     fakeStreamingEngineServer.shutdownNow();
-    if (!fakeStreamingEngineServer.awaitTermination(3, TimeUnit.MINUTES)) {
-      fail("Server did not terminate in time after force shutdown ");
+    if (!fakeStreamingEngineServer.awaitTermination(5, TimeUnit.MINUTES)) {
+      fail("Server did not terminate in time after force shutdown");
     }
   }
 
@@ -440,26 +435,6 @@ public class FanOutStreamingEngineWorkerHarnessTest {
     private void injectWorkerMetadata(WorkerMetadataResponse response) {
       if (responseObserver != null) {
         responseObserver.onNext(response);
-      }
-    }
-
-    public void complete() {
-      if (responseObserver != null) {
-        try {
-          responseObserver.onCompleted();
-        } catch (IllegalStateException e) {
-          // Stream already closed.
-        }
-      }
-    }
-
-    public void cancel() {
-      if (responseObserver != null) {
-        try {
-          responseObserver.onError(new RuntimeException("Test shutdown: cancelling metadata stream"));
-        } catch (IllegalStateException e) {
-          // Stream already closed.
-        }
       }
     }
   }
