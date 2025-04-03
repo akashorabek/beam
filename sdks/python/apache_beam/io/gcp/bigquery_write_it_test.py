@@ -447,6 +447,7 @@ class BigQueryWriteIntegrationTests(unittest.TestCase):
               table_id,
               schema=table_schema,
               method='STREAMING_INSERTS',
+              triggering_frequency=5,
               insert_retry_strategy='RETRY_NEVER',
               create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
               write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND))
