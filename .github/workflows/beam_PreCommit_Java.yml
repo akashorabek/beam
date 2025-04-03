@@ -180,7 +180,7 @@ jobs:
       - name: run Java PreCommit script
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :javaPreCommit --info
+          gradle-command: :javaPreCommit
           arguments: |
             -PdisableSpotlessCheck=true \
             -PdisableCheckStyle=true \
