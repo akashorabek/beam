@@ -113,7 +113,7 @@ public class FanOutStreamingEngineWorkerHarnessTest {
           new ArrayList<>(),
           new ArrayList<>(),
           new HashSet<>());
-  @Rule public transient Timeout globalTimeout = Timeout.seconds(1200);
+  @Rule public transient Timeout globalTimeout = Timeout.seconds(600);
   private Server fakeStreamingEngineServer;
   private CountDownLatch getWorkerMetadataReady;
   private GetWorkerMetadataTestStub fakeGetWorkerMetadataStub;
