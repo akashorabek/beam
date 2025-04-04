@@ -158,9 +158,10 @@ class ReadTests(BigQueryReadIntegrationTests):
     request = bigquery.BigqueryTablesInsertRequest(
         projectId=cls.project, datasetId=cls.dataset_id, table=table)
     cls.bigquery_client.client.tables.Insert(request)
+    # Call get_table so that we wait until the table is visible.
+    _ = cls.bigquery_client.get_table(cls.project, cls.dataset_id, table_name)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, cls.TABLE_DATA)
-    mod_time.sleep(10)
 
   @skip(['PortableRunner', 'FlinkRunner'])
   @pytest.mark.it_postcommit
@@ -396,9 +397,10 @@ class ReadUsingStorageApiTests(BigQueryReadIntegrationTests):
     request = bigquery.BigqueryTablesInsertRequest(
         projectId=cls.project, datasetId=cls.dataset_id, table=table)
     cls.bigquery_client.client.tables.Insert(request)
+    # Call get_table so that we wait until the table is visible.
+    _ = cls.bigquery_client.get_table(cls.project, cls.dataset_id, table_name)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, cls.TABLE_DATA)
-    mod_time.sleep(10)
 
   @classmethod
   def _setup_temporary_dataset(cls, project, query):
@@ -658,6 +660,8 @@ class ReadNewTypesTests(BigQueryReadIntegrationTests):
     request = bigquery.BigqueryTablesInsertRequest(
         projectId=cls.project, datasetId=cls.dataset_id, table=table)
     cls.bigquery_client.client.tables.Insert(request)
+    # Call get_table so that we wait until the table is visible.
+    _ = cls.bigquery_client.get_table(cls.project, cls.dataset_id, table_name)
     row_data = {
         'float': 0.33,
         'numeric': Decimal('10'),
@@ -676,7 +680,6 @@ class ReadNewTypesTests(BigQueryReadIntegrationTests):
 
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, table_data)
-    mod_time.sleep(10)
 
   def get_expected_data(self, native=True):
     byts = b'\xab\xac'
@@ -781,9 +784,10 @@ class ReadAllBQTests(BigQueryReadIntegrationTests):
     request = bigquery.BigqueryTablesInsertRequest(
         projectId=cls.project, datasetId=cls.dataset_id, table=table)
     cls.bigquery_client.client.tables.Insert(request)
+    # Call get_table so that we wait until the table is visible.
+    _ = cls.bigquery_client.get_table(cls.project, cls.dataset_id, table_name)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, data)
-    mod_time.sleep(10)
     return table_schema
 
   @classmethod
