@@ -383,43 +383,36 @@ class BigQueryWriteIntegrationTests(unittest.TestCase):
     Test that errors returned by beam.io.WriteToBigQuery
     contain both the failed rows and the reason for it failing.
     """
-    table_name = 'python_write_table'
+    table_name = 'python_write_table_insert_errors'
+    self.create_table(table_name)
     table_id = '{}.{}'.format(self.dataset_id, table_name)
 
     input_data = [{
-        'number': 1,
-        'str': 'some_string',
+        'int64': 1,
+        'time': '00:00:00',
     }, {
-        'number': 2
+        'time': '00:00:00'
     },
                   {
-                      'number': 3,
-                      'str': 'some_string',
+                      'int64': 3,
+                      'time': '00:00:00',
                       'additional_field_str': 'some_string',
                   }]
 
-    table_schema = {
-        "fields": [{
-            "name": "number", "type": "INTEGER", 'mode': 'REQUIRED'
-        }, {
-            "name": "str", "type": "STRING", 'mode': 'REQUIRED'
-        }]
-    }
-
     bq_result_errors = [(
         {
-            "number": 2
+            "time": "00:00:00"
         },
         [{
             "reason": "invalid",
             "location": "",
             "debugInfo": "",
-            "message": "Missing required field: Msg_0_CLOUD_QUERY_TABLE.str."
+            "message": "Missing required field: Msg_0_CLOUD_QUERY_TABLE.int64."
         }],
     ),
                         ({
-                            "number": 3,
-                            "str": "some_string",
+                            "int64": 3,
+                            "time": "00:00:00",
                             "additional_field_str": "some_string"
                         },
                          [{
@@ -445,10 +438,9 @@ class BigQueryWriteIntegrationTests(unittest.TestCase):
           p | 'create' >> beam.Create(input_data)
           | 'write' >> beam.io.WriteToBigQuery(
               table_id,
-              schema=table_schema,
               method='STREAMING_INSERTS',
               insert_retry_strategy='RETRY_NEVER',
-              create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED,
+              create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER,
               write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND))
 
       assert_that(
