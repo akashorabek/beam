@@ -59,8 +59,8 @@ try:
 except ImportError:
   NotFound = None
 
-# Number of seconds to wait for bucket deletion to propagate.
-WAIT_DELETE_BUCKET_PROPAGATION_SECONDS = 10
+# Number of seconds to wait for bucket deletion or creation to propagate.
+WAIT_BUCKET_PROPAGATION_SECONDS = 60
 
 
 @unittest.skipIf(gcsio is None, 'GCP dependencies are not installed')
@@ -213,10 +213,11 @@ class GcsIOIntegrationTest(unittest.TestCase):
     # are run at the same time. To avoid too many dangling buckets if bucket
     # removal fails, we limit the max number of possible bucket names in this
     # test to 1000.
-    overridden_bucket_name = 'gcsio-it-%d-%s-%s' % (
+    overridden_bucket_name = 'gcsio-it-%d-%s-%s-%d' % (
         random.randint(0, 999),
         google_cloud_options.region,
-        md5(google_cloud_options.project.encode('utf8')).hexdigest())
+        md5(google_cloud_options.project.encode('utf8')).hexdigest(),
+        int(time.time()))
 
     mock_default_gcs_bucket_name.return_value = overridden_bucket_name
 
@@ -225,13 +226,14 @@ class GcsIOIntegrationTest(unittest.TestCase):
     if existing_bucket:
       try:
         existing_bucket.delete()
-        time.sleep(WAIT_DELETE_BUCKET_PROPAGATION_SECONDS)
+        time.sleep(WAIT_BUCKET_PROPAGATION_SECONDS)
       except NotFound:
         # Bucket existence check from get_bucket may be inaccurate due to gcs
         # cache or delay
         pass
 
     bucket = gcsio.get_or_create_default_gcs_bucket(google_cloud_options)
+    time.sleep(WAIT_BUCKET_PROPAGATION_SECONDS)
     self.assertIsNotNone(bucket)
     self.assertEqual(bucket.name, overridden_bucket_name)
 

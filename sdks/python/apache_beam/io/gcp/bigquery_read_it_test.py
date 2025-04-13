@@ -46,6 +46,8 @@ from apache_beam.testing.util import assert_that
 from apache_beam.testing.util import equal_to
 from apache_beam.utils.timestamp import Timestamp
 
+from testing.util import matches_all
+
 # Protect against environments where bigquery library is not available.
 # pylint: disable=wrong-import-order, wrong-import-position
 try:
@@ -729,6 +731,8 @@ class ReadNewTypesTests(BigQueryReadIntegrationTests):
 
 
 class ReadAllBQTests(BigQueryReadIntegrationTests):
+  TABLE_DATA_AVAILABILITY_WAIT_SECONDS = 30
+
   TABLE_DATA_1 = [{
       'number': 1, 'str': 'abc'
   }, {
@@ -789,6 +793,7 @@ class ReadAllBQTests(BigQueryReadIntegrationTests):
     _ = cls.bigquery_client.get_table(cls.project, cls.dataset_id, table_name)
     cls.bigquery_client.insert_rows(
         cls.project, cls.dataset_id, table_name, data)
+    time.sleep(cls.TABLE_DATA_AVAILABILITY_WAIT_SECONDS)
     return table_schema
 
   @classmethod
@@ -828,7 +833,7 @@ class ReadAllBQTests(BigQueryReadIntegrationTests):
           | beam.io.ReadAllFromBigQuery())
       assert_that(
           result,
-          equal_to(self.TABLE_DATA_1 + self.TABLE_DATA_2 + self.TABLE_DATA_3))
+          matches_all(self.TABLE_DATA_1 + self.TABLE_DATA_2 + self.TABLE_DATA_3))
 
 
 class ReadInteractiveRunnerTests(BigQueryReadIntegrationTests):
