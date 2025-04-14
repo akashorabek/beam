@@ -208,7 +208,7 @@ class GcsIOIntegrationTest(unittest.TestCase):
     google_cloud_options.dataflow_kms_key = None
 
     import random
-    from hashlib import md5
+    from hashlib import blake2b
     # Add a random number to avoid collision if multiple test instances
     # are run at the same time. To avoid too many dangling buckets if bucket
     # removal fails, we limit the max number of possible bucket names in this
@@ -216,7 +216,7 @@ class GcsIOIntegrationTest(unittest.TestCase):
     overridden_bucket_name = 'gcsio-it-%d-%s-%s-%d' % (
         random.randint(0, 999),
         google_cloud_options.region,
-        md5(google_cloud_options.project.encode('utf8')).hexdigest(),
+        blake2b(google_cloud_options.project.encode('utf8'), digest_size=4).hexdigest(),
         int(time.time()))
 
     mock_default_gcs_bucket_name.return_value = overridden_bucket_name
