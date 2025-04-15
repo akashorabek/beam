@@ -159,7 +159,7 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
 
   @Before
   public void setUp() throws Exception {
-    OPTIONS.as(DirectOptions.class).setTargetParallelism(3);
+    OPTIONS.as(DirectOptions.class).setTargetParallelism(1);
     warehouse =
         String.format(
             "%s/%s/%s",
