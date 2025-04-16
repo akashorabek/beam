@@ -159,7 +159,8 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
 
   @Before
   public void setUp() throws Exception {
-    OPTIONS.as(DirectOptions.class).setTargetParallelism(1);
+    OPTIONS.as(DirectOptions.class).setTargetParallelism(3);
+    OPTIONS.as(DirectOptions.class).setBlockOnRun(false);
     warehouse =
         String.format(
             "%s/%s/%s",
@@ -567,7 +568,7 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
     assertThat(input.isBounded(), equalTo(UNBOUNDED));
 
     input.apply(Managed.write(ICEBERG).withConfig(config));
-    pipeline.run().waitUntilFinish();
+    pipeline.run().waitUntilFinish(Duration.standardSeconds(100));
 
     List<Record> returnedRecords = readRecords(table);
     assertThat(
@@ -600,7 +601,7 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
     assertThat(input.isBounded(), equalTo(UNBOUNDED));
 
     input.apply(Managed.write(ICEBERG).withConfig(config));
-    pipeline.run().waitUntilFinish();
+    pipeline.run().waitUntilFinish(Duration.standardSeconds(100));
 
     List<Record> returnedRecords = readRecords(table);
     assertThat(
@@ -680,7 +681,7 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
     }
 
     input.setRowSchema(BEAM_SCHEMA).apply(Managed.write(ICEBERG).withConfig(writeConfig));
-    pipeline.run().waitUntilFinish();
+    pipeline.run().waitUntilFinish(Duration.standardSeconds(100));
 
     Table table0 = catalog.loadTable(tableIdentifier0);
     Table table1 = catalog.loadTable(tableIdentifier1);
