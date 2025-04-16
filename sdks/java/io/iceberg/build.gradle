@@ -142,7 +142,7 @@ task integrationTest(type: Test) {
     // Disable Gradle cache: these ITs interact with live service that should always be considered "out of date"
     outputs.upToDateWhen { false }
 
-    include '**/BigQueryMetastoreCatalogIT.class'
+    include '**/*IT.class'
     // BQ metastore catalog doesn't support java 8
     if (usingJava8) {
         exclude '**/BigQueryMetastoreCatalogIT.class'

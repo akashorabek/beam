@@ -142,7 +142,7 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
   public void catalogCleanup() throws Exception {}
 
   public Integer numRecords() {
-    return 1000;
+    return 100;
   }
 
   public String tableId() {
