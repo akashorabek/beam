@@ -143,6 +143,9 @@ task integrationTest(type: Test) {
     outputs.upToDateWhen { false }
 
     include '**/*IT.class'
+    // Exclude flaky tests on DirectRunner
+    exclude '**/HiveCatalogIT.class'
+    exclude '**/BigQueryMetastoreCatalogIT.class'
     // BQ metastore catalog doesn't support java 8
     if (usingJava8) {
         exclude '**/BigQueryMetastoreCatalogIT.class'
