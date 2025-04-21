@@ -49,7 +49,7 @@ public class HiveCatalogIT extends IcebergCatalogBaseIT {
 
   @Override
   public String tableId() {
-    return String.format("%s.%s.%s", testDb(), "test_table", SALT);
+    return String.format("%s.%s", testDb(), "test_table" + "_" + SALT);
   }
 
   @BeforeClass
