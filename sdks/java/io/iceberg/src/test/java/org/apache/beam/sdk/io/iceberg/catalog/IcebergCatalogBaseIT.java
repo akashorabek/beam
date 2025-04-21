@@ -159,6 +159,7 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
 
   @Before
   public void setUp() throws Exception {
+    catalogName += System.nanoTime();
     OPTIONS.as(DirectOptions.class).setTargetParallelism(3);
     warehouse =
         String.format(
