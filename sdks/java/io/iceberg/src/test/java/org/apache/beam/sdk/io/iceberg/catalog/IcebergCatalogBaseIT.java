@@ -133,6 +133,7 @@ import org.slf4j.LoggerFactory;
  * #numRecords()}.
  */
 public abstract class IcebergCatalogBaseIT implements Serializable {
+  private static final long SETUP_TEARDOWN_SLEEP_MS = 5000;
   public abstract Catalog createCatalog();
 
   public abstract Map<String, Object> managedIcebergConfig(String tableId);
@@ -170,14 +171,14 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
     warehouse = warehouse(getClass());
     catalogSetup();
     catalog = createCatalog();
-    Thread.sleep(10000);
+    Thread.sleep(SETUP_TEARDOWN_SLEEP_MS);
   }
 
   @After
   public void cleanUp() throws Exception {
     try {
       catalogCleanup();
-      Thread.sleep(10000);
+      Thread.sleep(SETUP_TEARDOWN_SLEEP_MS);
     } catch (Exception e) {
       LOG.warn("Catalog cleanup failed.", e);
     }
@@ -204,7 +205,7 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
                 .collect(Collectors.toList());
         gcsUtil.remove(filesToDelete);
       }
-      Thread.sleep(10000);
+      Thread.sleep(SETUP_TEARDOWN_SLEEP_MS);
     } catch (Exception e) {
       LOG.warn("Failed to clean up GCS files.", e);
     }
@@ -220,9 +221,9 @@ public abstract class IcebergCatalogBaseIT implements Serializable {
 
   @Rule
   public transient Timeout globalTimeout =
-      Timeout.seconds(OPTIONS.getRunner().equals(DirectRunner.class) ? 400 : 20 * 60);
+      Timeout.seconds(OPTIONS.getRunner().equals(DirectRunner.class) ? 300 : 20 * 60);
 
-  private static final int NUM_SHARDS = 1;
+  private static final int NUM_SHARDS = 10;
   private static final Logger LOG = LoggerFactory.getLogger(IcebergCatalogBaseIT.class);
   private static final Schema DOUBLY_NESTED_ROW_SCHEMA =
       Schema.builder()
