@@ -30,7 +30,6 @@ jobs:
       issues: read
       statuses: read
     # Don't run on forks
-    if: github.repository == 'apache/beam'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
