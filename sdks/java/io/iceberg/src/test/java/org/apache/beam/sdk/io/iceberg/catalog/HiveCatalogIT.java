@@ -41,7 +41,7 @@ import org.junit.BeforeClass;
  */
 public class HiveCatalogIT extends IcebergCatalogBaseIT {
   private static HiveMetastoreExtension hiveMetastoreExtension;
-  private static long salt = System.nanoTime();
+  private long salt = System.nanoTime();
 
   private String testDb() {
     return "test_db_" + testName.getMethodName();
