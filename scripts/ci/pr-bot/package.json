@@ -1,6 +1,5 @@
 {
   "name": "pr-bot",
-  "type": "module",
   "version": "1.0.0",
   "description": "Scripts for the Beam PR bot",
   "main": "processNewPrs.js",
