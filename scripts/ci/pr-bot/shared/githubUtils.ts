@@ -16,25 +16,27 @@
  * limitations under the License.
  */
 
-import { Octokit } from "@octokit/rest";
+// const { Octokit } = require("@octokit/rest");
 const { REPO_OWNER, REPO } = require("./constants");
 
 export interface Label {
   name: string;
 }
 
-export function getGitHubClient() {
+export async function getGitHubClient() {
   let auth = process.env["GITHUB_TOKEN"];
   if (!auth) {
     throw new Error(
       "No github token provided - process.env['GITHUB_TOKEN'] must be set."
     );
   }
+  const { Octokit } = await import("@octokit/rest");
   return new Octokit({ auth });
 }
 
 export async function addPrComment(pullNumber: number, body: string) {
-  await getGitHubClient().rest.issues.createComment({
+  const client = await getGitHubClient();
+  await client.rest.issues.createComment({
     owner: REPO_OWNER,
     repo: REPO,
     issue_number: pullNumber,
@@ -46,9 +48,10 @@ export async function nextActionReviewers(
   pullNumber: number,
   existingLabels: Label[]
 ) {
+  const client = await getGitHubClient();
   let newLabels = removeNextActionLabel(existingLabels);
   newLabels.push("Next Action: Reviewers");
-  await getGitHubClient().rest.issues.setLabels({
+  await client.rest.issues.setLabels({
     owner: REPO_OWNER,
     repo: REPO,
     issue_number: pullNumber,
@@ -60,9 +63,10 @@ export async function nextActionAuthor(
   pullNumber: number,
   existingLabels: Label[]
 ) {
+  const client = await getGitHubClient();
   let newLabels = removeNextActionLabel(existingLabels);
   newLabels.push("Next Action: Author");
-  await getGitHubClient().rest.issues.setLabels({
+  await client.rest.issues.setLabels({
     owner: REPO_OWNER,
     repo: REPO,
     issue_number: pullNumber,
@@ -71,8 +75,9 @@ export async function nextActionAuthor(
 }
 
 export async function checkIfCommitter(username: string): Promise<boolean> {
+  const client = await getGitHubClient();
   const permissionLevel = (
-    await getGitHubClient().rest.repos.getCollaboratorPermissionLevel({
+    await client.rest.repos.getCollaboratorPermissionLevel({
       owner: REPO_OWNER,
       repo: REPO,
       username,
