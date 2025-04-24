@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-const { Octokit } = require("@octokit/rest");
+import { Octokit } from "@octokit/rest";
 const { REPO_OWNER, REPO } = require("./constants");
 
 export interface Label {
