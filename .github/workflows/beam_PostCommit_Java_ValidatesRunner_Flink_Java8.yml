@@ -84,7 +84,7 @@ jobs:
       - name: run validatesRunner Java8 script
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :runners:flink:1.19:validatesRunner
+          gradle-command: :runners:flink:1.19:validatesRunner --info
           arguments: |
             -x shadowJar \
             -x shadowTestJar \
