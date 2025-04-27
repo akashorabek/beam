@@ -60,7 +60,8 @@ jobs:
       github.event.comment.body == 'Run XVR_GoUsingJava_Dataflow PostCommit'
     runs-on: [self-hosted, ubuntu-20.04, main]
     env:
-      KUBELET_GCLOUD_CONFIG_PATH: ${{ github.workspace }}/.config/gcloud
+      HOME: ${{ github.workspace }}
+      CLOUDSDK_CONFIG: ${{ github.workspace }}/.config/gcloud
     timeout-minutes: 100
     name: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
     strategy:
@@ -70,7 +71,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Prepare gcloud config dir
-        run: mkdir -p "$KUBELET_GCLOUD_CONFIG_PATH"
+        run: mkdir -p "$CLOUDSDK_CONFIG"
       - name: Setup repository
         uses: ./.github/actions/setup-action
         with:
@@ -88,8 +89,6 @@ jobs:
           gcloud auth configure-docker gcr.io && \
           gcloud auth configure-docker us.gcr.io
       - name: run XVR GoUsingJava Dataflow script
-        env:
-          CLOUDSDK_CONFIG: ${{ env.KUBELET_GCLOUD_CONFIG_PATH }}
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
           gradle-command: :runners:google-cloud-dataflow-java:validatesCrossLanguageRunnerGoUsingJava
