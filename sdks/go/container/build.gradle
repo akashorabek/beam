@@ -43,7 +43,7 @@ docker {
   buildx project.useBuildx()
   platform(*project.containerPlatforms())
   load project.useBuildx() && !pushContainers
-  push true
+  push pushContainers
 }
 dockerPrepare.dependsOn tasks.named("goBuild")
 
