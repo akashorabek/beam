@@ -2819,6 +2819,10 @@ class BeamModulePlugin implements Plugin<Project> {
       ]
       def goTask = project.project(":sdks:go:test:").goIoValidatesRunnerTask(project, config.name+"GoUsingJava", config.goScriptOptions, pipelineOpts)
       goTask.configure {
+        project.rootProject.setProperty(
+                "docker-repository-root",
+                "us.gcr.io/apache-beam-testing"
+        )
         description = "Validates runner for cross-language capability of using Java transforms from Go SDK"
         dependsOn setupTask
         dependsOn config.startJobServer
