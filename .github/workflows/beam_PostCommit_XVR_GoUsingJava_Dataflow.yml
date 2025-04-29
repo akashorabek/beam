@@ -67,8 +67,6 @@ jobs:
         job_phrase: ["Run XVR_GoUsingJava_Dataflow PostCommit"]
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare gcloud config dir
-        run: mkdir -p "$CLOUDSDK_CONFIG"
       - name: Setup repository
         uses: ./.github/actions/setup-action
         with:
