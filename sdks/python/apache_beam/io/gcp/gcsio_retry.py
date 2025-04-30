@@ -22,7 +22,7 @@ Throttling Handler for GCSIO
 import inspect
 import logging
 import math
-# from itertools import tee
+from itertools import tee
 
 from google.api_core import exceptions as api_exceptions
 from google.api_core import retry
@@ -58,8 +58,9 @@ class ThrottlingHandler(object):
       # sleep_iterator is one of the arguments in the caller
       # i.e. _retry_error_helper() in google/api_core/retry/retry_base.py
       sleep_iterator = prev_frame.f_locals.get("sleep_iterator", iter([]))
+      sleep_iterator_copy = tee(sleep_iterator)
       try:
-        sleep_seconds = next(sleep_iterator)
+        sleep_seconds = next(sleep_iterator_copy)
       except StopIteration:
         sleep_seconds = 0
       ThrottlingHandler._THROTTLED_SECS.inc(math.ceil(sleep_seconds))
