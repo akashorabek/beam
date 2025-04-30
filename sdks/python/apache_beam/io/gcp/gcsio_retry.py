@@ -58,7 +58,7 @@ class ThrottlingHandler(object):
       # sleep_iterator is one of the arguments in the caller
       # i.e. _retry_error_helper() in google/api_core/retry/retry_base.py
       sleep_iterator = prev_frame.f_locals.get("sleep_iterator", iter([]))
-      sleep_iterator_copy = tee(sleep_iterator)
+      sleep_iterator, sleep_iterator_copy = tee(sleep_iterator)
       try:
         sleep_seconds = next(sleep_iterator_copy)
       except StopIteration:
