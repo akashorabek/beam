@@ -60,7 +60,7 @@ class ThrottlingHandler(object):
       sleep_iterator = prev_frame.f_locals.get("sleep_iterator", iter([]))
       _, copy = tee(sleep_iterator)
       try:
-        sleep_seconds = copy.next()
+        sleep_seconds = next(copy)
       except StopIteration:
         sleep_seconds = 0
       ThrottlingHandler._THROTTLED_SECS.inc(math.ceil(sleep_seconds))
