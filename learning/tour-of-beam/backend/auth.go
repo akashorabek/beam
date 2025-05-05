@@ -29,7 +29,7 @@ import (
 
 // helper to extract uid from context
 // set by ParseAuthHeader middleware
-// panics if key is not found
+// panics if key is not found.
 func getContextUid(r *http.Request) string {
 	return r.Context().Value(CONTEXT_KEY_UID).(string)
 }
