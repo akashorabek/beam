@@ -44,10 +44,10 @@ env:
   TOB_LEARNING_ROOT: ./samples/learning-content
   # firebase
   GOOGLE_CLOUD_PROJECT: demo-test-proj
-  FIREBASE_AUTH_EMULATOR_HOST: localhost:9099
+  FIREBASE_AUTH_EMULATOR_HOST: 127.0.0.1:9099
   # datastore
   DATASTORE_PROJECT_ID: demo-test-proj
-  DATASTORE_EMULATOR_HOST: localhost:8081
+  DATASTORE_EMULATOR_HOST: 127.0.0.1:9099
   DATASTORE_EMULATOR_DATADIR: ./datadir
   # playground API
   PLAYGROUND_ROUTER_HOST: localhost:8000
