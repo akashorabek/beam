@@ -27,13 +27,13 @@ goBuild {
   outputLocation = './build/target/${GOOS}_${GOARCH}/boot'
 }
 
-def pushContainers = true
+def pushContainers = project.rootProject.hasProperty(["isRelease"]) || project.rootProject.hasProperty("push-containers")
 
 docker {
   name containerImageName(
           name: project.docker_image_default_repo_prefix + "go_sdk",
           root: project.rootProject.hasProperty(["docker-repository-root"]) ?
-                  "us.gcr.io/apache-beam-testing" :
+                  "us.gcr.io/apache-beam-testing/github-actions" :
                   project.docker_image_default_repo_root)
   // tags used by dockerTag task
   tags containerImageTags()
