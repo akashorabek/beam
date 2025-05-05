@@ -14,7 +14,7 @@ FROM alpine:3.16
 
 RUN apk add openjdk11 npm bash
 
-RUN npm install -g firebase-tools
+RUN npm install -g firebase-tools@13.35.1
 
 COPY firebase.json /
 
