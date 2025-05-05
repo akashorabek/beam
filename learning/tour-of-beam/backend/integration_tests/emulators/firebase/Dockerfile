@@ -10,11 +10,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM alpine:3.16
+FROM node:20-alpine
 
 RUN apk add openjdk11 npm bash
 
-RUN npm install -g firebase-tools@13.35.1
+RUN npm install -g firebase-tools
 
 COPY firebase.json /
 
