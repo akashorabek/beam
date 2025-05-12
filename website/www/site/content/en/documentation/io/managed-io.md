@@ -32,6 +32,18 @@ For example, the DataflowRunner can seamlessly upgrade a Managed transform to
 its latest SDK version, automatically applying bug fixes and new features (no
 manual updates or user intervention required!)
 
+## Supported SDKs
+
+The Managed API is directly accessible through the
+[Java](https://beam.apache.org/releases/javadoc/current/org/apache/beam/sdk/managed/Managed.html)
+and
+[Python](https://beam.apache.org/releases/pydoc/current/apache_beam.transforms.managed.html)
+SDKs.
+
+Additionally, some SDKs use the Managed API internally. For example, the Iceberg connector
+used in [Beam YAML](https://beam.apache.org/releases/yamldoc/current/#writetoiceberg)
+and Beam SQL is invoked via the Managed API under the hood.
+
 ## Available Configurations
 
 <i>Note: required configuration fields are <strong>bolded</strong>.</i>
@@ -303,7 +315,7 @@ manual updates or user intervention required!)
         <code style="color: green">str</code>
       </td>
       <td>
-        Identifier of the Iceberg table.
+        A fully-qualified table identifier. You may also provide a template to write to multiple dynamic destinations, for example: `dataset.my_{col1}_{col2.nested}_table`.
       </td>
     </tr>
     <tr>
