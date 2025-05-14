@@ -348,7 +348,8 @@ class HuggingfaceInferenceAPITest(unittest.TestCase):
   def test_embeddings_with_inference_api(self):
     embedding_config = InferenceAPIEmbeddings(
         hf_token=_HF_TOKEN,
-        api_url="https://router.huggingface.co/hf-inference/models/sentence-transformers/all-mpnet-base-v2/pipeline/feature-extraction",
+        model_name=IMAGE_MODEL_NAME,
+        # api_url="https://router.huggingface.co/hf-inference/models/sentence-transformers/all-mpnet-base-v2/pipeline/feature-extraction",
         columns=[test_query_column],
     )
     expected_output = [0.13]
