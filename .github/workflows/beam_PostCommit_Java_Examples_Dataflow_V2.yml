@@ -73,13 +73,13 @@ jobs:
           comment_phrase: ${{ matrix.job_phrase }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           github_job: ${{ matrix.job_name }} (${{ matrix.job_phrase }})
-#      - name: Setup environment
-#        uses: ./.github/actions/setup-environment-action
-#      - name: run PostCommit Java Examples Dataflow V2 script
-#        uses: ./.github/actions/gradle-command-self-hosted-action
-#        with:
-#            gradle-command: :runners:google-cloud-dataflow-java:examplesJavaRunnerV2IntegrationTest
-#            max-workers: 12
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment-action
+      - name: run PostCommit Java Examples Dataflow V2 script
+        uses: ./.github/actions/gradle-command-self-hosted-action
+        with:
+            gradle-command: :runners:google-cloud-dataflow-java:examplesJavaRunnerV2IntegrationTest
+            max-workers: 12
       - name: Setup Java 17 environment
         uses: ./.github/actions/setup-environment-action
         with:
