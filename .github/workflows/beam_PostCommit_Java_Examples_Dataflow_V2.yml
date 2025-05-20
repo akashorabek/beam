@@ -89,8 +89,10 @@ jobs:
             gradle-command: :runners:google-cloud-dataflow-java:examplesJavaRunnerV2IntegrationTestDistroless
             max-workers: 12
             arguments:
+              -PdisableSpotlessCheck=true \
+              -PdisableCheckStyle=true \
               -PskipCheckerFramework \
-              -PtestJavaVersion=java17 \
+              -PtestJavaVersion=17 \
               -Pjava17Home=$JAVA_HOME_17_X64 \
       - name: Archive JUnit Test Results
         uses: actions/upload-artifact@v4
