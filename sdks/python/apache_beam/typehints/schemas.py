@@ -485,9 +485,13 @@ class SchemaTranslation(object):
       except KeyError:
         raise ValueError(
             "Unsupported atomic type: {0}".format(fieldtype_proto.atomic_type))
-    elif type_info == "array_type":
-      return Sequence[self.typing_from_runner_api(
-          fieldtype_proto.array_type.element_type)]
+    elif type_info in ("array_type", "iterable_type"):
+      elem = (
+          fieldtype_proto.array_type.element_type
+          if type_info == "array_type"
+          else fieldtype_proto.iterable_type.element_type
+      )
+      return Sequence[self.typing_from_runner_api(elem)]
     elif type_info == "map_type":
       return Mapping[
           self.typing_from_runner_api(fieldtype_proto.map_type.key_type),
