@@ -79,7 +79,7 @@ jobs:
       - name: run PostCommit Python Xlang IO Dataflow script
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :sdks:python:test-suites:dataflow:ioCrossLanguagePostCommit
+          gradle-command: :sdks:python:test-suites:dataflow:ioCrossLanguagePostCommit --info
           arguments: |
             -PuseWheelDistribution \
             -PkafkaBootstrapServer=10.128.0.40:9094,10.128.0.28:9094,10.128.0.165:9094 \
