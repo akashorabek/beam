@@ -354,7 +354,8 @@ if __name__ == '__main__':
           'fastavro>=0.23.6,<2',
           'fasteners>=0.3,<1.0',
           # TODO(https://github.com/grpc/grpc/issues/37710): Unpin grpc
-          'grpcio>=1.33.1,<2,!=1.48.0,!=1.59.*,!=1.60.*,!=1.61.*,!=1.62.0,!=1.62.1,<1.66.0',  # pylint: disable=line-too-long
+          'grpcio>=1.33.1,<2,!=1.48.0,!=1.59.*,!=1.60.*,!=1.61.*,!=1.62.0,!=1.62.1,<1.66.0; python_version <= "3.12"',  # pylint: disable=line-too-long
+          'grpcio>=1.67.0; python_version >= "3.13"', 
           'hdfs>=2.1.0,<3.0.0',
           'httplib2>=0.8,<0.23.0',
           'jsonschema>=4.0.0,<5.0.0',
@@ -431,7 +432,8 @@ if __name__ == '__main__':
           'gcp': [
               'cachetools>=3.1.0,<6',
               'google-api-core>=2.0.0,<3',
-              'google-apitools>=0.5.31,<0.5.32',
+              'google-apitools>=0.5.31,<0.5.32; python_version <= "3.12"',
+              'google-apitools>=0.5.32,<0.5.33; python_version >= "3.13"',
               # NOTE: Maintainers, please do not require google-auth>=2.x.x
               # Until this issue is closed
               # https://github.com/googleapis/google-cloud-python/issues/10566
