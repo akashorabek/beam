@@ -306,7 +306,6 @@ public class PubsubIOLT extends IOLoadTestBase {
             .setPipeline(writePipeline)
             .addParameter("runner", configuration.runner)
             .addParameter("streaming", "true")
-            .addParameter("defaultStreamingMode", "AT_LEAST_ONCE")
             .addParameter("numWorkers", String.valueOf(configuration.numWorkers))
             .addParameter("experiments", "use_runner_v2")
             .build();
