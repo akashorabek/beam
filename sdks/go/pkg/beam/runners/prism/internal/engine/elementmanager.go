@@ -161,8 +161,6 @@ type Config struct {
 	// MaxBundleSize caps the number of elements permitted in a bundle.
 	// 0 or less means this is ignored.
 	MaxBundleSize int
-	// Whether to use real-time clock as processing time
-	EnableRTC bool
 }
 
 // ElementManager handles elements, watermarks, and related errata to determine
