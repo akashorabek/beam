@@ -53,6 +53,7 @@ import org.apache.beam.sdk.testing.TestPipelineOptions;
 import org.apache.beam.sdk.testutils.publishing.InfluxDBSettings;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.Reshuffle;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.MoreObjects;
@@ -104,7 +105,7 @@ public class PubsubIOLT extends IOLoadTestBase {
                   Configuration.class), // 10 GB
               "large",
               Configuration.fromJsonString(
-                  "{\"numRecords\":100000000,\"valueSizeBytes\":1000,\"pipelineTimeout\":50,\"runner\":\"DataflowRunner\",\"numWorkers\":20}",
+                  "{\"numRecords\":100000000,\"valueSizeBytes\":1000,\"pipelineTimeout\":70,\"runner\":\"DataflowRunner\",\"numWorkers\":20}",
                   Configuration.class) // 100 GB
               );
     } catch (IOException e) {
@@ -269,7 +270,8 @@ public class PubsubIOLT extends IOLoadTestBase {
   private PipelineLauncher.LaunchInfo testWrite(WriteAndReadFormat format) throws IOException {
     PCollection<KV<byte[], byte[]>> dataFromSource =
         writePipeline.apply(
-            "Read from source", Read.from(new SyntheticUnboundedSource(configuration)));
+            "Read from source", Read.from(new SyntheticUnboundedSource(configuration)))
+            .apply("Reshuffle fanout", Reshuffle.of());
 
     switch (format) {
       case STRING:
@@ -304,6 +306,7 @@ public class PubsubIOLT extends IOLoadTestBase {
             .setPipeline(writePipeline)
             .addParameter("runner", configuration.runner)
             .addParameter("streaming", "true")
+            .addParameter("defaultStreamingMode", "AT_LEAST_ONCE")
             .addParameter("numWorkers", String.valueOf(configuration.numWorkers))
             .addParameter("experiments", "use_runner_v2")
             .build();
