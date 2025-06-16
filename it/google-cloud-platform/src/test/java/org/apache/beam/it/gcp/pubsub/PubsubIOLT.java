@@ -270,8 +270,7 @@ public class PubsubIOLT extends IOLoadTestBase {
   private PipelineLauncher.LaunchInfo testWrite(WriteAndReadFormat format) throws IOException {
     PCollection<KV<byte[], byte[]>> dataFromSource =
         writePipeline.apply(
-            "Read from source", Read.from(new SyntheticUnboundedSource(configuration)))
-            .apply("Reshuffle fanout", Reshuffle.of());
+            "Read from source", Read.from(new SyntheticUnboundedSource(configuration)));
 
     switch (format) {
       case STRING:
@@ -307,7 +306,7 @@ public class PubsubIOLT extends IOLoadTestBase {
             .addParameter("runner", configuration.runner)
             .addParameter("streaming", "true")
             .addParameter("numWorkers", String.valueOf(configuration.numWorkers))
-            .addParameter("experiments", "use_runner_v2")
+            .addParameter("experiments", "use_runner_v2,supportsAtLeastOnce=true,defaultStreamingMode=AT_LEAST_ONCE")
             .build();
 
     return pipelineLauncher.launch(project, region, writeOptions);
