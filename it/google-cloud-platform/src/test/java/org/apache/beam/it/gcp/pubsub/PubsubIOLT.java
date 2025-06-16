@@ -53,6 +53,7 @@ import org.apache.beam.sdk.testing.TestPipelineOptions;
 import org.apache.beam.sdk.testutils.publishing.InfluxDBSettings;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.Reshuffle;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.MoreObjects;
@@ -304,6 +305,8 @@ public class PubsubIOLT extends IOLoadTestBase {
             .setPipeline(writePipeline)
             .addParameter("runner", configuration.runner)
             .addParameter("streaming", "true")
+            .addParameter("experiments", "use_runner_v2")
+            .addParameter("defaultStreamingMode", "AT_LEAST_ONCE")
             .addParameter("numWorkers", String.valueOf(configuration.numWorkers))
             .build();
 
