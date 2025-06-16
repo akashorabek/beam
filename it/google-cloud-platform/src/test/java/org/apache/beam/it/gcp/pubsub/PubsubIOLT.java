@@ -105,7 +105,7 @@ public class PubsubIOLT extends IOLoadTestBase {
                   Configuration.class), // 10 GB
               "large",
               Configuration.fromJsonString(
-                  "{\"numRecords\":100000000,\"valueSizeBytes\":1000,\"pipelineTimeout\":70,\"runner\":\"DataflowRunner\",\"numWorkers\":20}",
+                  "{\"numRecords\":100000000,\"valueSizeBytes\":1000,\"pipelineTimeout\":50,\"runner\":\"DataflowRunner\",\"numWorkers\":20}",
                   Configuration.class) // 100 GB
               );
     } catch (IOException e) {
