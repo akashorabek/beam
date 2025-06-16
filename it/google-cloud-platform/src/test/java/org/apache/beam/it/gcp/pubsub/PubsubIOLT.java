@@ -75,6 +75,7 @@ import org.junit.Test;
  */
 public class PubsubIOLT extends IOLoadTestBase {
 
+  private static final double TOLERANCE_FRACTION = 0.005;
   private static final int NUMBER_OF_BUNDLES_FOR_LOCAL = 10;
   private static final int NUMBER_OF_BUNDLES_FOR_MEDIUM_AND_LARGE = 20;
   private static final String READ_ELEMENT_METRIC_NAME = "read_count";
@@ -240,10 +241,12 @@ public class PubsubIOLT extends IOLoadTestBase {
             readLaunchInfo.jobId(),
             getBeamMetricsName(PipelineMetricsType.COUNTER, READ_ELEMENT_METRIC_NAME));
 
-    // Assert that actual data equals or greater than expected data number since there might be
+    // Assert that actual data is within tolerance of expected data number since there might be
     // duplicates when testing big amount of data
     long expectedDataNum = configuration.numRecords - configuration.forceNumInitialBundles;
-    assertTrue(numRecords >= expectedDataNum);
+    long allowedTolerance = (long)(configuration.numRecords * TOLERANCE_FRACTION);
+    double delta = Math.abs(numRecords - expectedDataNum);
+    assertTrue(delta <= allowedTolerance);
 
     // export metrics
     MetricsConfiguration writeMetricsConfig =
@@ -306,7 +309,7 @@ public class PubsubIOLT extends IOLoadTestBase {
             .addParameter("runner", configuration.runner)
             .addParameter("streaming", "true")
             .addParameter("numWorkers", String.valueOf(configuration.numWorkers))
-            .addParameter("experiments", "use_runner_v2,supportsAtLeastOnce=true,defaultStreamingMode=AT_LEAST_ONCE")
+            .addParameter("experiments", "use_runner_v2")
             .build();
 
     return pipelineLauncher.launch(project, region, writeOptions);
