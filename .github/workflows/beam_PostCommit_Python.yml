@@ -61,25 +61,26 @@ jobs:
       matrix:
         job_name: [beam_PostCommit_Python]
         job_phrase: [Run Python PostCommit]
-        include:
-          - python_version: '3.9'
-            delay: 0       # no wait
-          - python_version: '3.10'
-            delay: 900     # 15 min
-          - python_version: '3.11'
-            delay: 1800    # 30 min
-          - python_version: '3.12'
-            delay: 2700    # 45 min
+        python_version: ['3.9', '3.10', '3.11', '3.12']
     if: |
       github.event_name == 'workflow_dispatch' ||
       github.event_name == 'pull_request_target' ||
       (github.event_name == 'schedule' && github.repository == 'apache/beam') ||
       startswith(github.event.comment.body, 'Run Python PostCommit 3.')
     steps:
+      - name: Calculate delay
+        id: calc_delay
+        run: |
+          case "${{ matrix.python_version }}" in
+          "3.9")  echo "delay=0"    >> $GITHUB_OUTPUT ;;
+          "3.10") echo "delay=900"  >> $GITHUB_OUTPUT ;;  # 15 min
+          "3.11") echo "delay=1800" >> $GITHUB_OUTPUT ;;  # 30 min
+          "3.12") echo "delay=2700" >> $GITHUB_OUTPUT ;;  # 45 min
+          esac
       - name: Delay job start
         run: |
-          echo "⏳ Delaying for ${{ matrix.delay }} seconds before starting tests…"
-          sleep ${{ matrix.delay }}
+          echo "⏳ Waiting ${{ steps.calc_delay.outputs.delay }}s before starting tests"
+          sleep ${{ steps.calc_delay.outputs.delay }}
       - uses: actions/checkout@v4
       - name: Setup repository
         uses: ./.github/actions/setup-action
