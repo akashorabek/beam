@@ -73,9 +73,9 @@ jobs:
         run: |
           case "${{ matrix.python_version }}" in
           "3.9")  echo "delay=0"    >> $GITHUB_OUTPUT ;;
-          "3.10") echo "delay=0"  >> $GITHUB_OUTPUT ;;
+          "3.10") echo "delay=150"  >> $GITHUB_OUTPUT ;; # 2.5 min
           "3.11") echo "delay=300" >> $GITHUB_OUTPUT ;;  # 5 min
-          "3.12") echo "delay=300" >> $GITHUB_OUTPUT ;;  # 5 min
+          "3.12") echo "delay=450" >> $GITHUB_OUTPUT ;;  # 7.5 min
           esac
       - name: Delay job start
         run: |
