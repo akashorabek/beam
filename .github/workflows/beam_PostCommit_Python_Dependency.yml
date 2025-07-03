@@ -60,7 +60,6 @@ jobs:
         job_name: [beam_PostCommit_Python_Dependency]
         job_phrase: [Run Python PostCommit Dependency]
         python_version: ['3.9','3.12']
-        python_version_for_task: ['39','312']
     timeout-minutes: 120
     if: |
       github.event_name == 'workflow_dispatch' ||
@@ -80,10 +79,16 @@ jobs:
         with:
           java-version: default
           python-version: ${{ matrix.python_version }}
+      - name: Set PY_VER_CLEAN
+        id: set_py_ver_clean
+        run: |
+          PY_VER=${{ matrix.python_version }}
+          PY_VER_CLEAN=${PY_VER//.}
+          echo "py_ver_clean=$PY_VER_CLEAN" >> $GITHUB_OUTPUT
       - name: Run postCommitPyDep
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :sdks:python:test-suites:tox:py${{ matrix.python_version_for_task }}:postCommitPyDep --info
+          gradle-command: :sdks:python:test-suites:tox:py${{steps.set_py_ver_clean.outputs.py_ver_clean}}:postCommitPyDep --info
           arguments: -PuseWheelDistribution
       - name: Archive Python Test Results
         uses: actions/upload-artifact@v4
