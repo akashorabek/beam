@@ -238,7 +238,8 @@ task integrationTest(type: Test) {
 
   include '**/*IT.class'
 
-  maxParallelForks 4
+  maxParallelForks = 1
+  forkEvery = 1
   classpath = project(":sdks:java:extensions:sql")
           .sourceSets
           .test
