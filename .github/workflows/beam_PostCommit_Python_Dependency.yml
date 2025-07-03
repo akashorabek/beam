@@ -82,7 +82,7 @@ jobs:
       - name: Run postCommitPyDep
         uses: ./.github/actions/gradle-command-self-hosted-action
         with:
-          gradle-command: :sdks:python:test-suites:tox:py${{ matrix.python_version }}:postCommitPyDep
+          gradle-command: :sdks:python:test-suites:tox:py${{ matrix.python_version }}:postCommitPyDep --info
           arguments: -PuseWheelDistribution
       - name: Archive Python Test Results
         uses: actions/upload-artifact@v4
